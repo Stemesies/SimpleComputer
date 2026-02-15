@@ -1,2 +1,4 @@
 *.o
+*.c.temp-stream-*
 *.bin
+*.a

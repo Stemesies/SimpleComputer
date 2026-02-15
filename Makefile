@@ -1,4 +1,17 @@
+SEQUENCE = mySimpleComputer console
+
+all: $(addsuffix -compile, ${SEQUENCE})
+
 .SILENT:
-all:
-	find . -type f -not -wholename './Makefile' -name Makefile -execdir make \;
-	echo "\033[38;2;255;20;140mCompilation complete.\033[0m"
+clean: $(addsuffix -clean, ${SEQUENCE})
+
+
+%-compile:
+	$(MAKE) -C $*
+	echo "\033[38;2;255;20;140mCompilation of $* complete.\033[0m"
+
+%-clean:
+	$(MAKE) -C $* clean
+
+run: all
+	$(MAKE) -C console run
