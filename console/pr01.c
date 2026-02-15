@@ -16,6 +16,19 @@
   putchar (']');                                                              \
   putchar ('\n')
 
+#define decodeValue()                                                         \
+  sc_commandDecode (value, &sign, &command, &operand);                        \
+  printf ("Sign: %d\n", sign);                                                \
+  printf ("Command: 0x%x (%d) - ", command, command);                         \
+  printBin (command, BITS_PER_COMMAND);                                       \
+  printf ("\nOperand: 0x%x (%d) - ", operand, operand);                       \
+  printBin (operand, BITS_PER_OPERAND);                                       \
+  putchar ('\n');
+
+#define decodeCell(address)                                                   \
+  sc_memoryGet (address, &value);                                             \
+  decodeValue ()
+
 int
 main ()
 {
@@ -139,6 +152,48 @@ main ()
   printf ("Invalid value: 0x7FFF (Absolute max value). Expected: -3 (Command "
           "overflow). Got: ");
   printf ("%d\n", sc_incounterSet (MAX_CELL_VALUE));
+
+  int sign = 0;
+  int command = 0;
+  int operand = 0;
+
+  printPink ("Decoding cells...\n");
+
+  printMemory ();
+  putchar ('\n');
+
+  printf ("Decoding cell 0. Expected hex: 1, 4C, 7F.\n");
+  decodeCell (0);
+  printf ("Decoding cell 10. Expected hex: 0, 42, 6D.\n");
+  decodeCell (10);
+  printf ("Decoding cell 127. Expected hex: 0, F, 10.\n");
+  decodeCell (127);
+  printf ("Decoding cell 52. Expected hex: 1, 0, 0.\n");
+  decodeCell (52);
+
+  printPink ("Decoding accumulator...\n");
+
+  printf ("current state: ");
+  printAccumulator ();
+  putchar ('\n');
+
+  printf ("Decoding accumulator. Expected hex: 1, 4C, 7f.\n");
+  sc_accumulatorGet (&value);
+  decodeValue ();
+
+  printPink ("Encoding command...\n");
+
+  printf ("Encoding 0, 4C, 0. Expecting 0 1001100 0000000.\n");
+  sc_commandEncode (0, 0x4C, 0, &value);
+  printDecodedCommand (value);
+
+  printf ("Encoding 1, 0, 0. Expecting 1 0000000 0000000.\n");
+  sc_commandEncode (1, 0, 0, &value);
+  printDecodedCommand (value);
+
+  printf ("Encoding 1, 0, 7F. Expecting 1 0000000 1111111.\n");
+  sc_commandEncode (1, 0, 0x7F, &value);
+  printDecodedCommand (value);
 
   printPink ("Finished.\n");
 

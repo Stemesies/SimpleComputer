@@ -15,4 +15,6 @@ void printDecodedCommand (int value);
 void printAccumulator ();
 void printCounters ();
 
+void printBin (int value, int lengthInBits);
+
 #endif
