@@ -1,10 +1,10 @@
 SOURCES= ${shell find ./ -name '*.c'}
 OBJECTS= $(addprefix .build/, $(SOURCES:.c=.o))
 
-BIN_NAME= console.bin
+BIN_NAME= .bin/console.bin
 
-LIB = ../mySimpleComputer/libMySimpleComputer.a
-LIB2 = ../myTerm/libMyTerm.a
+LIB = ../mySimpleComputer/.bin/libMySimpleComputer.a
+LIB2 = ../myTerm/.bin/libMyTerm.a
 
 COMPILE= gcc -g -c -I ../
 LINK= gcc -g -Wall -I ../ 
@@ -12,6 +12,7 @@ LINK= gcc -g -Wall -I ../
 all: ${BIN_NAME}
 
 ${BIN_NAME}: ${OBJECTS} ${LIB} ${LIB2}
+	@mkdir -p $(@D)
 	${LINK} $^ -o ${BIN_NAME}
 
 .build/%.o: %.c

@@ -5,12 +5,10 @@ all: format $(addsuffix -compile, ${SEQUENCE})
 
 format:
 	find . -type f -name *.[ch] | xargs clang-format --style GNU -i --verbose
+	find . -name '*.[ch].temp-stream-*' -type f -delete
 
 clean: $(addsuffix -clean, ${SEQUENCE})
-	find . -name '*.[ch].temp-stream-*' -type f -delete
 	find . -name '*.o' -type f -delete
-
-
 
 %-compile:
 	@$(MAKE) -C $*

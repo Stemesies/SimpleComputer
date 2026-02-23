@@ -1,7 +1,7 @@
 SOURCES= ${shell find ./ -name '*.c'}
 OBJECTS= $(addprefix .build/, $(SOURCES:.c=.o))
 
-LIB_NAME= libMySimpleComputer.a
+LIB_NAME= .bin/libMySimpleComputer.a
 
 COMPILE= gcc -I ../include -g -c
 LINK= ar rcs
@@ -9,6 +9,7 @@ LINK= ar rcs
 all: ${LIB_NAME}
 
 ${LIB_NAME}: ${OBJECTS}
+	@mkdir -p $(@D)
 	${LINK} ${LIB_NAME} $^
 
 .build/%.o: %.c
