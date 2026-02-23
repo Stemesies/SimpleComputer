@@ -1,15 +1,19 @@
 #include <console/console.h>
 
 void
-printCell (int address)
+printCell (int address, Colors fg, Colors bg)
 {
   int value = 0;
 
   if (sc_memoryGet (address, &value) != 0)
     {
+      mt_setfgcolor (BRIGHT_WHITE);
+      mt_setbgcolor (RED);
       printf ("INV:%d", address);
+      mt_setdefaultcolor ();
       return;
     }
 
-  printCellValue (value);
+  mt_gotoXY (2 + (address % 10) * 6, 2 + (address / 10));
+  printCellValue (value, fg, bg);
 }

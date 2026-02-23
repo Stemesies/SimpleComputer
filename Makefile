@@ -1,4 +1,4 @@
-SEQUENCE = mySimpleComputer console
+SEQUENCE = mySimpleComputer myTerm console
 
 
 all: format $(addsuffix -compile, ${SEQUENCE})
