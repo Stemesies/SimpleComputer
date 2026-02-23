@@ -4,4 +4,5 @@ int
 sc_regInit ()
 {
   setFlagRegister (REG_TICK_IGNORE);
+  return 0;
 }

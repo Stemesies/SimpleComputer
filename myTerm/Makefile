@@ -3,7 +3,7 @@ OBJECTS= $(addprefix .build/, $(SOURCES:.c=.o))
 
 LIB_NAME= .bin/libMyTerm.a
 
-COMPILE= gcc -I ../ -g -c
+COMPILE= gcc -Wall -Werror -Wextra -I ../ -g -c
 LINK= ar rcs
 
 all: ${LIB_NAME}

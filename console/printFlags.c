@@ -6,12 +6,6 @@
   else                                                                        \
     write (1, "_", 1);
 
-static char *fieldName = "Регистр флагов";
-#define FIELD_NAME_LENGTH = 14
-#define HALF_FIELD_NAME_LENGTH = 7
-
-#define MIN_LENGTH = FIELD_NAME_LENGTH + 4 + 4 // Margin Horizontal = 4
-
 void
 printFlags ()
 {

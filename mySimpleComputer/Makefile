@@ -3,7 +3,7 @@ OBJECTS= $(addprefix .build/, $(SOURCES:.c=.o))
 
 LIB_NAME= .bin/libMySimpleComputer.a
 
-COMPILE= gcc -I ../include -g -c
+COMPILE= gcc -Wall -Werror -Wextra -I ../include -g -c
 LINK= ar rcs
 
 all: ${LIB_NAME}

@@ -6,8 +6,8 @@ BIN_NAME= .bin/console.bin
 LIB = ../mySimpleComputer/.bin/libMySimpleComputer.a
 LIB2 = ../myTerm/.bin/libMyTerm.a
 
-COMPILE= gcc -g -c -I ../
-LINK= gcc -g -Wall -I ../ 
+COMPILE= gcc -g -c -Wall -Werror -Wextra -I ../
+LINK= gcc -g -Wall -Werror -Wextra -I ../ 
 
 all: ${BIN_NAME}
 

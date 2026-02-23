@@ -3,9 +3,9 @@
 static int history[5][2]
     = { { -1, -1 }, { -1, -1 }, { -1, -1 }, { -1, -1 }, { -1, -1 } };
 static char render[9] = { 0 };
-static char head = 0;
-static char printedI = 0;
-static char i = 0;
+static unsigned char head = 0;
+static unsigned char printedI = 0;
+static unsigned char i = 0;
 
 void
 updateTerm ()
