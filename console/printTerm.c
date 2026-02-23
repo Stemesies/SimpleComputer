@@ -18,7 +18,7 @@ updateTerm ()
       mt_gotoXY (TERM_OFFSET_X + 1, LOW_OFFSET_Y + 1 + printedI);
       if (history[i][0] != -1)
         {
-          sprintf (render, "%03d%c", history[i][0],
+          sprintf (render, "%02x%c ", history[i][0],
                    history[i][1] == -1 ? '>' : '<');
           write (1, render, 7);
           if (history[i][1] != -1)
