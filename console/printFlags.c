@@ -2,13 +2,14 @@
 
 #define printOrUnderline(chara, checkedRegister)                              \
   if ((registers & checkedRegister) == checkedRegister)                       \
-    putchar (chara);                                                          \
+    write (1, chara, 1);                                                      \
   else                                                                        \
-    putchar ('_');
+    write (1, "_", 1);
 
 void
 printFlags ()
 {
+
   int registers;
 
   if (sc_regGet (REG_ALL, &registers) != 0)
@@ -17,13 +18,14 @@ printFlags ()
       return;
     }
 
-  printOrUnderline ('P', REG_OVERFLOW);
-  putchar (' ');
-  printOrUnderline ('0', REG_ZERO_DIV);
-  putchar (' ');
-  printOrUnderline ('M', REG_OUT_OF_BOUNDS);
-  putchar (' ');
-  printOrUnderline ('T', REG_TICK_IGNORE);
-  putchar (' ');
-  printOrUnderline ('E', REG_INVALID_COMMAND);
+  mt_gotoXY (FLAGS_OFFSET_X + 5, 2);
+  printOrUnderline ("P", REG_OVERFLOW);
+  write (1, "  ", 2);
+  printOrUnderline ("0", REG_ZERO_DIV);
+  write (1, "  ", 2);
+  printOrUnderline ("M", REG_OUT_OF_BOUNDS);
+  write (1, "  ", 2);
+  printOrUnderline ("T", REG_TICK_IGNORE);
+  write (1, "  ", 2);
+  printOrUnderline ("E", REG_INVALID_COMMAND);
 }

@@ -2,4 +2,5 @@
 *.c.temp-stream-*
 *.h.temp-stream-*
 *.bin
+*.build
 *.a

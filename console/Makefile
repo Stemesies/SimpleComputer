@@ -1,22 +1,27 @@
-LIB = ../mySimpleComputer/libMySimpleComputer.a
+SOURCES= ${shell find ./ -name '*.c'}
+OBJECTS= $(addprefix .build/, $(SOURCES:.c=.o))
 
-COMPILE= gcc -g -c -I ../
-LINK= gcc -g -Wall -L../mySimpleComputer -lMySimpleComputer -I ../ 
+BIN_NAME= .bin/console.bin
 
-DEPENDENCIES= ${shell find ./ -name '*.c'}
-OBJECTS= $(DEPENDENCIES:.c=.o)
-BIN_NAME= console.bin
+LIB = ../mySimpleComputer/.bin/libMySimpleComputer.a
+LIB2 = ../myTerm/.bin/libMyTerm.a
+
+COMPILE= gcc -g -c -Wall -Werror -Wextra -I ../
+LINK= gcc -g -Wall -Werror -Wextra -I ../ 
 
 all: ${BIN_NAME}
 
-${BIN_NAME}: ${OBJECTS} ${LIB}
+${BIN_NAME}: ${OBJECTS} ${LIB} ${LIB2}
+	@mkdir -p $(@D)
 	${LINK} $^ -o ${BIN_NAME}
 
-%.o: %.c
+.build/%.o: %.c
+	@mkdir -p $(@D)
 	${COMPILE} $< -o $@
 
 run:
 	./${BIN_NAME}
 
 clean:
-	find -name '${BIN_NAME}' -delete
+	-@rm -r .bin/
+	-@rm -r .build/

@@ -8,16 +8,21 @@ printBin (int value, int lengthInBits)
   for (int i = 0; i < lengthInBits; i++)
     {
       if ((value >> (lengthInBits - i - 1)) & 0x1)
-        putchar ('1');
+        write (1, "1", 1);
       else
-        putchar ('0');
+        write (1, "0", 1);
     }
 }
 
 void
 printDecodedCommand (int value)
 {
-  printf ("Hex: 0x%x;\nDec: %d;\nOct: %o;\nBin: ", value, value, value);
+  mt_gotoXY (2, DETAILED_CELL_OFFSET_Y + 1);
+  char render[45] = { 0 };
+  sprintf (render, "dec: %05d | oct: %05o | hex: %04x    bin: ", value, value,
+           value);
+
+  write (1, render, 45);
   printBin (value, TOTAL);
   putchar ('\n');
 }

@@ -1,17 +1,21 @@
-COMPILE= gcc -I ../include -g -c
-LINK= ar rcs
+SOURCES= ${shell find ./ -name '*.c'}
+OBJECTS= $(addprefix .build/, $(SOURCES:.c=.o))
 
-DEPENDENCIES= ${shell find ./ -name '*.c'}
-OBJECTS= $(DEPENDENCIES:.c=.o)
-LIB_NAME= libMySimpleComputer.a
+LIB_NAME= .bin/libMySimpleComputer.a
+
+COMPILE= gcc -Wall -Werror -Wextra -I ../include -g -c
+LINK= ar rcs
 
 all: ${LIB_NAME}
 
 ${LIB_NAME}: ${OBJECTS}
+	@mkdir -p $(@D)
 	${LINK} ${LIB_NAME} $^
 
-%.o: %.c
+.build/%.o: %.c
+	@mkdir -p $(@D)
 	${COMPILE} $< -o $@
 
 clean:
-	find -name '${LIB_NAME}' -delete
+	-@rm -r .bin/
+	-@rm -r .build/
