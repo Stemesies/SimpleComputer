@@ -45,13 +45,39 @@ main ()
   printCounters ();
 
   updateTerm ();
+  generateDefault ();
+  int ok = 0;
+  bc_printbigchar (bc_chartoglyph ('8'), ok, 0, NOTHING, NOTHING);
+  ok += 8;
+  bc_printbigchar (bc_chartoglyph ('8'), ok, 0, NOTHING, NOTHING);
+  ok += 8;
+  bc_printbigchar (bc_chartoglyph ('0'), ok, 0, NOTHING, NOTHING);
+  ok += 8;
+  bc_printbigchar (bc_chartoglyph ('0'), ok, 0, NOTHING, NOTHING);
+  ok += 8;
+  bc_printbigchar (bc_chartoglyph ('5'), ok, 0, NOTHING, NOTHING);
+  ok += 8;
+  bc_printbigchar (bc_chartoglyph ('5'), ok, 0, NOTHING, NOTHING);
+  ok += 8;
+  bc_printbigchar (bc_chartoglyph ('5'), ok, 0, NOTHING, NOTHING);
+  ok += 8;
+  bc_printbigchar (bc_chartoglyph ('3'), ok, 0, NOTHING, NOTHING);
+  ok += 8;
+  bc_printbigchar (bc_chartoglyph ('5'), ok, 0, NOTHING, NOTHING);
+  ok += 8;
+  bc_printbigchar (bc_chartoglyph ('3'), ok, 0, NOTHING, NOTHING);
+  ok += 8;
+  bc_printbigchar (bc_chartoglyph ('5'), ok, 0, NOTHING, NOTHING);
+  ok += 8;
 
   for (int i = 0; i < 7; i++)
     {
       printTerm (i, i % 2);
-      mt_gotoXY (0, LOW_OFFSET_Y + 7);
+      mt_gotoXY (0, COMMAND_LINE_Y);
       sleep (1);
     }
+
+  bc_freeSpace ();
 
   return 0;
 }

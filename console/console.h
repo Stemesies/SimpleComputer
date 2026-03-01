@@ -6,14 +6,6 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#define BRD_TOP '─'
-
-// const char *BRD_SIDE = "│"; // { 0xE2, 0x94, 0x82 }; // '│'
-#define BRD_TPLFT '┌'
-#define BRD_TPRGH '┐'
-#define BRD_BTLFT '└'
-#define BRD_BTRGH '┘'
-
 #define SCREEN_WIDTH 23 + 23 + 61
 #define SCREEN_HEIGHT 15 + 3 + 7 + 1
 
@@ -32,6 +24,8 @@
 #define KEYBINDS_OFFSET_X (RAM_WIDTH + 16)
 #define LOW_OFFSET_Y (RAM_HEIGHT + 3)
 
+#define COMMAND_LINE_Y (LOW_OFFSET_Y + 7)
+
 void printFlags ();
 
 void printCell (int address, Colors fg, Colors bg);
@@ -49,15 +43,9 @@ void updateTerm ();
 void printTerm (int address, int input);
 
 void init_screen ();
-void init_memoryBlock ();
-void init_accumulatorBlock ();
-void init_flagsBlock ();
-void init_incounterBlock ();
-void init_commandBlock ();
+
 void printCommand ();
-void init_detailedCellBlock ();
-void init_cacheBlock ();
-void init_termBlock ();
-void init_keybindsBlock ();
+
+int generateDefault ();
 
 #endif
