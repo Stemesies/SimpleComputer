@@ -64,6 +64,6 @@ bc_box (int x1, int y1, int x2, int y2, Colors box_fg, Colors box_bg,
   mt_setbgcolor (header_bg);
   mt_setfgcolor (header_fg);
 
-  write (1, header, strlen (header));
+  bc_printA (header);
   mt_setdefaultcolor ();
 }
