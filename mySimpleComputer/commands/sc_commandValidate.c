@@ -1,12 +1,14 @@
-#include "../sc_variables.h"
+#include <include/mySimpleComputer.h>
 
 int
-sc_commandValidate (int command)
+sc_commandValidate (int value)
 {
-  if (command < 0 || command > MAX_CELL_VALUE)
+  if (value < 0 || value > MAX_CELL_VALUE)
     return -2;
 
-  if (((command >> BITS_PER_OPERAND) & MAX_COMMAND_SIZE) >= COMMANDS_COUNT)
+  int sign = value >> (BITS_PER_COMMAND + BITS_PER_OPERAND);
+  int command = (value >> BITS_PER_OPERAND) & MAX_COMMAND_SIZE;
+  if (sign == 0 && command >= COMMANDS_COUNT)
     return -3;
 
   return 0;

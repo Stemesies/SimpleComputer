@@ -1,13 +1,13 @@
 ARGS=
-SEQUENCE = mySimpleComputer myTerm myBigChars console
+SEQUENCE = mySimpleComputer myTerm myBigChars myReadKey console
 BRUH = 
 
 all: format
 	@for dir in $(SEQUENCE); do \
 		$(MAKE) -C $$dir; \
-		echo "\033[38;2;255;20;140mCompilation of $$dir complete.\033[0m"; \
+		echo -e "\033[38;2;255;20;140mCompilation of $$dir complete.\033[0m"; \
 	done
-	@echo "\033[38;2;255;20;140mDone. (ꈍ ꒳ ꈍ✿)\033[0m"
+	@echo -e "\033[38;2;255;20;140mDone. (ꈍ ꒳ ꈍ✿)\033[0m"
 
 format:
 	find . -type f -name *.[ch] | xargs clang-format --style GNU -i --verbose

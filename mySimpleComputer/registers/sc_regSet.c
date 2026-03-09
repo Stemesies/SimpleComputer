@@ -1,5 +1,5 @@
 #include "../sc_variables.h"
-#include <mySimpleComputer.h>
+#include <include/mySimpleComputer.h>
 
 int
 sc_regSet (int regaddr, int value)

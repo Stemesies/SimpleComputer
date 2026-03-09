@@ -1,9 +1,13 @@
 #include <console/console.h>
+#include <unistd.h>
 
 void
 init_screen ()
 {
+  for (int i = 0; i < SCREEN_HEIGHT * 2; i++)
+    write (1, "\n", 2);
   mt_clrscr ();
+  mt_gotoXY (0, 0);
 
   bc_box (0, 0, RAM_WIDTH, RAM_HEIGHT - 1, NOTHING, NOTHING,
           " Оперативная память ", RED, NOTHING);

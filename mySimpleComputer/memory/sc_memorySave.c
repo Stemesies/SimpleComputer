@@ -10,14 +10,14 @@ sc_memorySave (char *filename)
   FILE *file = fopen (filename, "w");
 
   if (file == NULL)
-    return -1;
+    return -2;
 
   size_t count = fwrite (getMemory (), sizeof (int), MEMORY_SIZE, file);
 
   fclose (file);
 
   if (count < MEMORY_SIZE)
-    return -1;
+    return -3;
 
   return 0;
 }

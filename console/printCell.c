@@ -14,6 +14,6 @@ printCell (int address, Colors fg, Colors bg)
       return;
     }
 
-  mt_gotoXY (2 + (address % 10) * 6, 2 + (address / 10));
+  mt_gotoXY (2 + (address % RAM_COLUMNS) * 6, 2 + (address / RAM_COLUMNS));
   printCellValue (value, fg, bg);
 }

@@ -1,4 +1,4 @@
-#include "../sc_variables.h"
+#include "include/mySimpleComputer.h"
 
 int
 sc_commandEncode (int sign, int command, int operand, int *value)
@@ -7,7 +7,7 @@ sc_commandEncode (int sign, int command, int operand, int *value)
   if (sign != 0 && sign != 1)
     return -1;
 
-  if (command < 0 || command >= COMMANDS_COUNT)
+  if (command < 0 || command > MAX_COMMAND_SIZE)
     return -2;
 
   if (operand < 0 || operand > MAX_OPERAND_SIZE)

@@ -15,6 +15,10 @@
 #define RAM_WIDTH 61
 #define RAM_HEIGHT 16
 
+#define RAM_COLUMNS 10
+#define RAM_ROWS (MEMORY_SIZE / RAM_COLUMNS)
+#define RAM_LAST_ROW_LEN (MEMORY_SIZE - RAM_ROWS * RAM_COLUMNS)
+
 #define ACCUMULATOR_OFFSET_X (RAM_WIDTH + 1)
 #define FLAGS_OFFSET_X (ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH + 1)
 
@@ -51,4 +55,18 @@ void printBigCell ();
 int getSelectedCell ();
 
 void setSelectedCell (int addr);
+
+void im_memoryLeft ();
+void im_memoryRight ();
+void im_memoryUp ();
+void im_memoryDown ();
+void im_memoryWrite ();
+
+void im_accumulator ();
+void im_incounter ();
+
+void im_exit (int *exitSignal);
+void im_reset ();
+void im_memorySave ();
+void im_memoryLoad ();
 #endif

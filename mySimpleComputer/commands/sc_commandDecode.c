@@ -1,4 +1,4 @@
-#include "../sc_variables.h"
+#include <include/mySimpleComputer.h>
 
 int
 sc_commandDecode (int value, int *sign, int *command, int *operand)
@@ -10,9 +10,9 @@ sc_commandDecode (int value, int *sign, int *command, int *operand)
   if (value < 0 || value > MAX_CELL_VALUE)
     return -2;
 
-  *operand = value & 0x7F;
+  *operand = value & MAX_OPERAND_SIZE;
   value = value >> BITS_PER_OPERAND;
-  *command = value & 0x7F;
+  *command = value & MAX_COMMAND_SIZE;
   value = value >> BITS_PER_COMMAND;
   *sign = value & 0x1;
 
