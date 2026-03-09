@@ -4,7 +4,7 @@ int
 sc_commandDecode (int value, int *sign, int *command, int *operand)
 {
 
-  if (sign == 0 || command == 0 || operand == 0 /* Null */)
+  if (sign == (int *)0 || command == (int *)0 || operand == (int *)0)
     return -1;
 
   if (value < 0 || value > MAX_CELL_VALUE)

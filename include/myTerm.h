@@ -4,6 +4,7 @@
 typedef enum colors
 {
   NOTHING = -1,
+  RESET = 0,
   INVERSE = 7,
   BLACK = 30,
   RED = 31,
@@ -24,6 +25,9 @@ typedef enum colors
   BRIGHT_CYAN = 96,
   BRIGHT_WHITE = 97
 } Colors;
+
+int mt_alt ();
+int mt_dealt ();
 
 int mt_clrscr ();
 int mt_delline ();

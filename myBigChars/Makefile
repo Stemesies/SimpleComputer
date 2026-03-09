@@ -1,9 +1,9 @@
 SOURCES= ${shell find ./ -name '*.c'}
 OBJECTS= $(addprefix .build/, $(SOURCES:.c=.o))
 
-LIB_NAME= .bin/libMyTerm.a
-
-COMPILE= gcc -Wall -Werror -Wextra -I ../ -g -c
+LIB_NAME= .bin/libMyBigChars.a
+# -Wall -Werror -Wextra
+COMPILE= gcc  -I ../ -g -c
 LINK= ar rcs
 
 all: ${LIB_NAME}

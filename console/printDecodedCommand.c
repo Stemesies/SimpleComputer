@@ -15,9 +15,11 @@ printBin (int value, int lengthInBits)
 }
 
 void
-printDecodedCommand (int value)
+printDecodedCommand ()
 {
-  mt_gotoXY (2, DETAILED_CELL_OFFSET_Y + 1);
+  int value = -1;
+  sc_memoryGet (getSelectedCell (), &value);
+  mt_gotoXY (2, RAM_HEIGHT + 1);
   char render[45] = { 0 };
   sprintf (render, "dec: %05d | oct: %05o | hex: %04x    bin: ", value, value,
            value);
