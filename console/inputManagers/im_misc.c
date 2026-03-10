@@ -11,7 +11,11 @@ im_memorySave ()
   mt_delline ();
   write (1, "Введите имя файла для сохранения: ", 63);
 
-  rk_readn (filename, 300);
+  if (rk_readn (filename, 300) == 1)
+    {
+      mt_delline ();
+      return;
+    }
 
   mt_gotoXY (0, COMMAND_LINE_Y);
   mt_delline ();
@@ -35,7 +39,11 @@ im_memoryLoad ()
   mt_delline ();
   write (1, "Введите имя файла для загрузки: ", 59);
 
-  rk_readn (filename, 300);
+  if (rk_readn (filename, 300) == 1)
+    {
+      mt_delline ();
+      return;
+    }
 
   mt_gotoXY (0, COMMAND_LINE_Y);
   mt_delline ();

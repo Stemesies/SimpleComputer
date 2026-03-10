@@ -38,6 +38,7 @@ im_writeAccumulator ()
   switch (result)
     {
     case 1:
+      mt_setdefaultcolor ();
       printAccumulator ();
       break;
 
@@ -137,6 +138,7 @@ im_writeIncounter ()
   switch (result)
     {
     case 1:
+      mt_setdefaultcolor ();
       printCounters ();
       break;
 
