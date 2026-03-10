@@ -1,6 +1,7 @@
 #include "bc_variables.h"
 #include <fcntl.h>
 #include <include/myBigChars.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 int
@@ -15,6 +16,7 @@ bc_save (char *filename)
   write (fd, ahhh, sizeof (int));
   int result = bc_bigcharwrite (fd, getBigChars (), getBigCharsLength ());
   close (fd);
+  chmod (filename, S_IRUSR | S_IWUSR | S_IROTH | S_IWOTH);
 
   return result;
 }

@@ -9,10 +9,10 @@ void
 im_memorySave ()
 {
   char filename[300] = "";
+  mt_delline ();
   write (1, "Введите имя файла для сохранения: ", 63);
 
-  read (0, filename, 299);
-  filename[strlen (filename) - 1] = '\0';
+  rk_readn (filename, 300);
 
   mt_gotoXY (0, COMMAND_LINE_Y);
   mt_delline ();
@@ -33,10 +33,10 @@ void
 im_memoryLoad ()
 {
   char filename[300] = "";
+  mt_delline ();
   write (1, "Введите имя файла для загрузки: ", 59);
 
-  read (0, filename, 299);
-  filename[strlen (filename) - 1] = '\0';
+  rk_readn (filename, 300);
 
   mt_gotoXY (0, COMMAND_LINE_Y);
   mt_delline ();
@@ -63,6 +63,7 @@ im_reset ()
 {
   Keys key = K_0;
 
+  mt_delline ();
   write (1, "Вы действительно хотите сбросить машину? [y/n]\n", 83);
   rk_readkey (&key);
   if (key != 'y' && key != 'Y')
@@ -88,6 +89,7 @@ im_exit (int *exitSignal)
 {
   Keys key = K_0;
 
+  mt_delline ();
   write (1, "Вы действительно хотите выйти? [y/n]\n", 64);
   rk_readkey (&key);
   if (key != 'y' && key != 'Y')

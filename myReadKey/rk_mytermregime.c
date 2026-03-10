@@ -18,10 +18,10 @@ rk_mytermregime (int regime, int vtime, int vmin, int echo, int sigint)
   else
     currentRegime->c_lflag &= ~ECHO;
 
-  if (sigint != 0)
-    currentRegime->c_lflag |= ISIG;
-  else
-    currentRegime->c_lflag &= ~ISIG;
+  // if (sigint != 0)
+  //   currentRegime->c_lflag |= ISIG;
+  // else
+  //   currentRegime->c_lflag &= ~ISIG;
 
   currentRegime->c_cc[VTIME] = vtime;
   currentRegime->c_cc[VMIN] = vmin;

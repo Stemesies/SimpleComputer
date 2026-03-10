@@ -25,6 +25,7 @@ im_writeAccumulator ()
       printAccumulator ();
       mt_gotoXY (RAM_WIDTH + 3 + 4, 2);
       printCellValue (value, BLACK, GREEN);
+      printTerm (-2, 1);
       return;
     }
 
@@ -122,6 +123,7 @@ im_writeIncounter ()
       printCounters ();
       mt_gotoXY (RAM_WIDTH + 3 + 14, INCOUNTER_OFFSET_Y + 1);
       printCellValue (value, BLACK, GREEN);
+      printTerm (-3, 1);
       return;
     }
 

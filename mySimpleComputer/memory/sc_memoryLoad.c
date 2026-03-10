@@ -10,7 +10,7 @@ sc_memoryLoad (char *filename)
   FILE *file = fopen (filename, "r");
 
   if (file == NULL)
-    return -1;
+    return -2;
 
   int buffer[MEMORY_SIZE];
 
@@ -19,7 +19,7 @@ sc_memoryLoad (char *filename)
   fclose (file);
 
   if (count < MEMORY_SIZE)
-    return -1;
+    return -3;
 
   int *memory = getMemory ();
   for (int i = 0; i < MEMORY_SIZE; i++)

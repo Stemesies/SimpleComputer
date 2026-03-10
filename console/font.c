@@ -7,11 +7,9 @@ typedef unsigned char *BigChar;
 int
 main (int argc, char *argv[])
 {
-  mt_clrscr ();
   if (argc < 2)
     {
       write (1, "Usage: font <source> <destination>\n", 36);
-      mt_gotoXY (0, 2);
       return -1;
     }
 
@@ -19,11 +17,11 @@ main (int argc, char *argv[])
   if (chars <= (unsigned char *)0)
     {
       mt_setfgcolor (RED);
-      write (1,
-             "Unable to allocate memory for default font. Generation failed.",
-             63);
+      write (
+          1,
+          "Unable to allocate memory for default font. Generation failed.\n",
+          64);
       mt_setdefaultcolor ();
-      mt_gotoXY (0, 2);
       return -1;
     }
 
@@ -32,9 +30,8 @@ main (int argc, char *argv[])
   if (file == NULL)
     {
       mt_setfgcolor (RED);
-      write (1, "Sources not found.", 19);
+      write (1, "Sources not found.\n", 20);
       mt_setdefaultcolor ();
-      mt_gotoXY (0, 2);
       return -1;
     }
 
@@ -70,18 +67,17 @@ main (int argc, char *argv[])
     {
       mt_setfgcolor (RED);
       write (1, "Error happened during saving: ", 31);
-      char ok[3] = "";
-      sprintf (ok, "%d", result);
-      write (1, ok, 3);
-      mt_gotoXY (0, 2);
+      char ok[4] = "";
+      sprintf (ok, "%d\n", result);
+      write (1, ok, 4);
 
       mt_setdefaultcolor ();
     }
   bc_freeSpace ();
 
   write (1, "Font generated successfully (◕▿◕✿)\n", 44);
-  char buff[30] = "";
-  sprintf (buff, "Loaded %d glyphs.", chara);
+  char buff[31] = "";
+  sprintf (buff, "Loaded %d glyphs.\n", chara);
   write (1, buff, strlen (buff));
 
   return 0;

@@ -107,6 +107,7 @@ im_memoryWrite ()
       sc_memorySet (selectedCell, value);
       setSelectedCell (selectedCell);
       printCell (selectedCell, BLACK, GREEN);
+      printTerm (selectedCell, 1);
       return;
     }
 

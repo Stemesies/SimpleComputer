@@ -1,3 +1,4 @@
+#include "include/myTerm.h"
 #include <console/console.h>
 #include <unistd.h>
 
@@ -29,19 +30,19 @@ init_screen ()
   bc_box (ACCUMULATOR_OFFSET_X, INCOUNTER_OFFSET_Y + 3,
           ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH + MINI_BLOCK_WIDTH + 1,
           RAM_HEIGHT + 3, NOTHING, NOTHING,
-          " Редактируемая ячейка (увеличено) ", RED, WHITE);
+          " Редактируемая ячейка (увеличено) ", RED, NOTHING);
 
   bc_box (0, RAM_HEIGHT, 61, RAM_HEIGHT + 3, NOTHING, NOTHING,
-          " Редактируемая ячейка (формат) ", RED, WHITE);
+          " Редактируемая ячейка (формат) ", RED, NOTHING);
 
   bc_box (0, LOW_OFFSET_Y, 65, LOW_OFFSET_Y + 7, NOTHING, NOTHING,
-          " Кеш процессора ", GREEN, WHITE);
+          " Кеш процессора ", GREEN, NOTHING);
 
   bc_box (TERM_OFFSET_X, LOW_OFFSET_Y, TERM_OFFSET_X + 11, LOW_OFFSET_Y + 7,
-          NOTHING, NOTHING, " IN--OUT ", GREEN, WHITE);
+          NOTHING, NOTHING, " IN--OUT ", GREEN, NOTHING);
 
   bc_box (KEYBINDS_OFFSET_X, LOW_OFFSET_Y, KEYBINDS_OFFSET_X + 32,
-          LOW_OFFSET_Y + 7, NOTHING, NOTHING, " Клавиши ", GREEN, WHITE);
+          LOW_OFFSET_Y + 7, NOTHING, NOTHING, " Клавиши ", GREEN, NOTHING);
 
   mt_gotoXY (KEYBINDS_OFFSET_X + 1, LOW_OFFSET_Y + 1);
   write (1, "l - load  s - save  i - reset", 30);
