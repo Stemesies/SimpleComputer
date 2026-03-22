@@ -17,5 +17,5 @@ sc_commandValidate (int value)
           return 0;
       return -3;
     }
-  return 0;
+  return -1;
 }

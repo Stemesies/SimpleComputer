@@ -2,9 +2,9 @@
 #include <signal.h>
 #include <sys/time.h>
 
-static struct itimerval nval
-    = { .it_interval = { 0, 500000 }, .it_value = { 0, 500000 } },
-    oval;
+static struct itimerval nval = { .it_interval = { 0, TICK_DELAY * 1000 },
+                                 .it_value = { 0, TICK_DELAY * 1000 } },
+                        oval;
 
 void
 IG (int signo)

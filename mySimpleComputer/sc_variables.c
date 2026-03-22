@@ -16,7 +16,7 @@ static int flagRegister = REG_TICK_IGNORE;
 static int accumulator = 0;
 static int incounter = 0;
 static char idleIncounter = 0;
-static int tickCounter = -1;
+static int tickCounter = 0;
 static int isIdleJustCompleted = 0;
 
 int *
@@ -94,7 +94,7 @@ decrementIdleIncounter ()
 void
 incrementIdleIncounter (char value)
 {
-  idleIncounter += value;
+  idleIncounter += value - 1;
 }
 
 int

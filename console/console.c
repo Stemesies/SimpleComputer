@@ -145,7 +145,7 @@ systemListener (int key, int options)
       mt_delline ();
       break;
 
-    case STATE_READ_REQUEST:
+    case STATE_READ_REQUEST:;
       int *termField = printTerm (options, 1);
       int value = 0;
       int result = 1;
