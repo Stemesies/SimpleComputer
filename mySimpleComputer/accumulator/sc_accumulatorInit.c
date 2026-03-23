@@ -1,8 +1,8 @@
-#include "../sc_variables.h"
+#include <mySimpleComputer/sc_variables.h>
 
 int
 sc_accumulatorInit ()
 {
-  setAccumulator (0);
+  accumulator = 0;
   return 0;
 }

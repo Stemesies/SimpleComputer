@@ -84,7 +84,7 @@ void
 printTestResults ()
 {
   int fault = 0;
-  print ("Test %d: '%s'", testIndex, testName);
+  writef ("Test %d: '%s'", testIndex, testName);
 
   if (expectedTickCount != -1)
     {
@@ -92,8 +92,8 @@ printTestResults ()
       if (expectedTickCount != accum)
         {
           mt_setfgcolor (RED);
-          print ("\n | Invalid tick. Expected: %d. Got: %d", expectedTickCount,
-                 accum);
+          writef ("\n | Invalid tick. Expected: %d. Got: %d",
+                  expectedTickCount, accum);
           mt_setdefaultcolor ();
           fault = 1;
         }
@@ -183,7 +183,7 @@ printTestResults ()
       if (mem != expected[i])
         {
           mt_setfgcolor (RED);
-          print ("\n | Invalid memory[%d] expected: ", i);
+          writef ("\n | Invalid memory[%d] expected: ", i);
           printCellValue (expected[i], NOTHING, NOTHING);
           write (1, " got: ", 7);
           printCellValue (mem, NOTHING, NOTHING);
@@ -231,6 +231,8 @@ listener (int state, int operand)
         animationStep = 0;
       // fall through
     case STATE_TICK:;
+      if (testFinished)
+        break;
       int val = 0;
       sc_incounterGet (&val);
       write (1, "\033[F", 4);
@@ -240,7 +242,7 @@ listener (int state, int operand)
           mt_setbgcolor (RED);
           mt_setfgcolor (1);
           mt_setfgcolor (BLACK);
-          print ("<blocked %2d>", operand);
+          writef ("<blocked %2d>", operand);
           mt_setdefaultcolor ();
           write (1, " ", 1);
         }
@@ -248,10 +250,10 @@ listener (int state, int operand)
         {
           write (1, "             ", 14);
         }
-      print ("[ %d ➜ %d] Test '%s' is running ", sc_tickCounter (), val,
-             testName);
+      writef ("[ %d ➜ %d] Test '%s' is running ", sc_tickCounter (), val,
+              testName);
 
-      print ("... %c\n", animation[animationStep]);
+      writef ("... %c\n", animation[animationStep]);
     }
 
   return 0;
@@ -316,7 +318,7 @@ main (int argc, char *argv[])
     runOnly = argv[1];
 
   sc_setStateListener (listener);
-  IG_setTickDelay (0, 50000);
+  sc_setSimulationDelay (0, 50000);
   IG_init ();
   write (1, "\n", 1);
 

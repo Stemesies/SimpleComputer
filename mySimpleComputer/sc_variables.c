@@ -10,56 +10,16 @@ Command commands[] = { { "NOP", 0, OPNONE },     { "CPUINFO", 1, OPNONE },
                        { "JZ", 42, OPADDR },     { "HALT", 43, OPNONE },
                        { "RCCR", 70, OPADDR },   { "MOVA", 71, OPADDR } };
 
-static int memory[MEMORY_SIZE];
-
-static int flagRegister = REG_TICK_IGNORE;
-static int accumulator = 0;
-static int incounter = 0;
-static char idleIncounter = 0;
-static int tickCounter = 0;
-static int isIdleJustCompleted = 0;
-
-int *
-getMemory ()
-{
-  return memory;
-}
-
-int
-getFlagRegister ()
-{
-  return flagRegister;
-}
-
-void
-setFlagRegister (int value)
-{
-  flagRegister = value;
-}
-
-int
-getAccumulator ()
-{
-  return accumulator;
-}
-
-void
-setAccumulator (int value)
-{
-  accumulator = value;
-}
-
-int
-getIncounter ()
-{
-  return incounter;
-}
-
-void
-setIncounter (int value)
-{
-  incounter = value;
-}
+int simulatonDelaySecs = 0;
+int simulatonDelayUsecs = 500000;
+int memory[MEMORY_SIZE];
+int flagRegister = REG_TICK_IGNORE;
+int accumulator = 0;
+int incounter = 0;
+int tickCounter = 0;
+char idleIncounter = 0;
+int isIdleJustCompleted = 0;
+int isRunningVar = 0;
 
 int
 sc_tickCounter ()
@@ -67,50 +27,21 @@ sc_tickCounter ()
   return tickCounter;
 }
 
-void
-incrementTickCounter ()
-{
-  tickCounter++;
-}
-
-void
-resetTickCounter ()
-{
-  tickCounter = 0;
-}
-
-char
-getIdleIncounter ()
-{
-  return idleIncounter;
-}
-
-void
-decrementIdleIncounter ()
-{
-  idleIncounter--;
-}
-
-void
-incrementIdleIncounter (char value)
-{
-  idleIncounter += value;
-}
-
 int
-getIsJustIdleCompleted ()
+sc_isRunning ()
 {
-  return isIdleJustCompleted;
-}
-void
-setIsJustIdleCompleted (int value)
-{
-  isIdleJustCompleted = value;
+  return isRunningVar;
 }
 
 Command *
-getCommands ()
+sc_getCommands ()
 {
-
   return commands;
+}
+
+void
+sc_setSimulationDelay (int sec, int usec)
+{
+  simulatonDelaySecs = sec;
+  simulatonDelayUsecs = usec;
 }

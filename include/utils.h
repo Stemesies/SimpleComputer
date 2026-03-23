@@ -2,7 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define print(str, formats...)                                                \
+#define writef(str, formats...)                                               \
   if (1)                                                                      \
     {                                                                         \
       char amogus[300] = "";                                                  \

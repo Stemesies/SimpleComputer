@@ -51,6 +51,8 @@ void updateTerm ();
 int *printTerm (int address, int input);
 
 void init_screen ();
+void init_drawIncounterBox (Colors headerColor, Colors backgroundColor);
+void init_drawAccumulatorBox (Colors headerColor, Colors backgroundColor);
 
 void printCommand ();
 
@@ -61,6 +63,8 @@ void moveIncounterCell ();
 void printSelectedCell ();
 void hideSelectedCell ();
 void moveSelectedCell (int to);
+
+void invalidCellExplain (int resultCode);
 
 // Input managers
 
@@ -83,5 +87,6 @@ void im_memoryLoad ();
 int l_readRequest (int destAddress);
 void l_cellUpdate (int cell);
 void l_incounterUpdate (int idleCounter);
+void l_reset ();
 
 #endif

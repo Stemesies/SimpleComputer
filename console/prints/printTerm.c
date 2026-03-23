@@ -1,10 +1,8 @@
-#include "include/mySimpleComputer.h"
 #include <console/console.h>
-#include <unistd.h>
+#include <include/utils.h>
 
 static int history[5][2]
     = { { -1, -1 }, { -1, -1 }, { -1, -1 }, { -1, -1 }, { -1, -1 } };
-static char render[9] = { 0 };
 static unsigned char head = 0;
 static unsigned char printedI = 0;
 static unsigned char i = 0;
@@ -31,22 +29,11 @@ updateTerm ()
       if (i >= 5)
         i = 0;
 
-      switch (address)
-        {
-        case -1:
-          continue;
-        case -2:
-          sprintf (render, "ac%c ", input == 1 ? '<' : '>');
-          break;
-        case -3:
-          sprintf (render, "ic%c ", input == 1 ? '<' : '>');
-          break;
-        default:
-          sprintf (render, "%02x%c ", address, input == 1 ? '<' : '>');
-          break;
-        }
+      if (address == -1)
+        continue;
 
-      write (1, render, 7);
+      writef ("%02x%c ", address, input == 1 ? '<' : '>');
+
       printCellValue (value, NOTHING, NOTHING);
     }
 }

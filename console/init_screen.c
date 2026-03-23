@@ -3,25 +3,38 @@
 #include <unistd.h>
 
 void
+init_drawIncounterBox (Colors headerColor, Colors backgroundColor)
+{
+  bc_box (ACCUMULATOR_OFFSET_X, INCOUNTER_OFFSET_Y,
+          ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH, INCOUNTER_OFFSET_Y + 3,
+          NOTHING, NOTHING, " Счетчик  команд ", headerColor, backgroundColor);
+}
+
+void
+init_drawAccumulatorBox (Colors headerColor, Colors backgroundColor)
+{
+  bc_box (ACCUMULATOR_OFFSET_X, 0, ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH, 3,
+          NOTHING, NOTHING, " Аккумулятор ", headerColor, backgroundColor);
+}
+
+void
 init_screen ()
 {
   for (int i = 0; i < SCREEN_HEIGHT * 2; i++)
     write (1, "\n", 2);
+
   mt_clrscr ();
   mt_gotoXY (0, 0);
 
   bc_box (0, 0, RAM_WIDTH, RAM_HEIGHT - 1, NOTHING, NOTHING,
           " Оперативная память ", RED, NOTHING);
 
-  bc_box (ACCUMULATOR_OFFSET_X, 0, ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH, 3,
-          NOTHING, NOTHING, " Аккумулятор ", RED, NOTHING);
+  init_drawAccumulatorBox (RED, NOTHING);
 
   bc_box (FLAGS_OFFSET_X, 0, FLAGS_OFFSET_X + MINI_BLOCK_WIDTH, 3, NOTHING,
           NOTHING, " Регистр  флагов ", RED, NOTHING);
 
-  bc_box (ACCUMULATOR_OFFSET_X, INCOUNTER_OFFSET_Y,
-          ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH, INCOUNTER_OFFSET_Y + 3,
-          NOTHING, NOTHING, " Счетчик  команд ", RED, NOTHING);
+  init_drawIncounterBox (RED, NOTHING);
 
   bc_box (FLAGS_OFFSET_X, INCOUNTER_OFFSET_Y,
           FLAGS_OFFSET_X + MINI_BLOCK_WIDTH, INCOUNTER_OFFSET_Y + 3, NOTHING,

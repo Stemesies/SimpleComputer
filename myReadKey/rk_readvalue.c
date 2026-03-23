@@ -32,6 +32,5 @@ rk_readvalue (int *value, int timeout)
 
   *value = result;
 
-  rk_mytermrestore ();
   return 0;
 }

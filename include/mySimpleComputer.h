@@ -2,6 +2,8 @@
 #ifndef MY_SIMPLE_COMPUTER_HEADER
 #define MY_SIMPLE_COMPUTER_HEADER
 
+#define NULL ((void *)0)
+
 #define STATE_MEMORY_UPDATE 0
 #define STATE_ACCUMULATOR_UPDATE 1
 #define STATE_INCOUNTER_UPDATE 2
@@ -13,6 +15,7 @@
 #define STATE_CPUINFO 8
 #define STATE_TICK 9
 #define STATE_POST_TICK 10
+#define STATE_IS_RUNNING 11
 
 #define REG_ALL 0x1F
 // P
@@ -51,7 +54,7 @@ typedef struct _simpleassembly_command
   char operandType;
 } Command;
 
-Command *getCommands ();
+Command *sc_getCommands ();
 
 // Аккумулятор
 
@@ -71,9 +74,11 @@ int sc_incounterInit ();
 int sc_incounterGet (int *value);
 int sc_incounterSet (int value);
 
-int sc_tickCounter ();
-
 // Регистры флагов
+
+#define sc_regEnable(regs) sc_regSet (regs, regs);
+#define sc_regDisable(regs) sc_regSet (regs, 0);
+
 int sc_regInit ();
 int sc_regGet (int regaddr, int *value);
 int sc_regSet (int regaddr, int value);
@@ -97,5 +102,11 @@ void sc_setStateListener (int listener (int signal, int value));
 int sc_notifyListener (int signal, int value);
 void IG_setTickDelay (int delaySec, int delayUsec);
 void ICR_tick ();
+
+int sc_tickCounter ();
+
+int sc_isRunning ();
+
+void sc_setSimulationDelay (int sec, int usec);
 
 #endif

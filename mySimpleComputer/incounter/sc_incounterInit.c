@@ -1,8 +1,8 @@
-#include "../sc_variables.h"
+#include <mySimpleComputer/sc_variables.h>
 
 int
 sc_incounterInit ()
 {
-  setIncounter (0);
+  incounter = 0;
   return 0;
 }

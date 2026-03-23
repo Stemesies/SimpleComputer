@@ -1,12 +1,10 @@
-#include "mySimpleComputer/sc_variables.h"
-#include <include/mySimpleComputer.h>
+#include <mySimpleComputer/sc_variables.h>
 #include <signal.h>
 #include <sys/time.h>
 
 static int forceTick = 0;
 static int skippingTicks = 0;
-static int flags = 0;
-static int lastFlags = 0;
+
 void
 ICR (int signo)
 {
@@ -17,37 +15,42 @@ ICR (int signo)
     }
 
   sc_regGet (REG_TICK_IGNORE, &skippingTicks);
-  sc_regGet (REG_ALL, &lastFlags);
 
   if (skippingTicks && !forceTick)
-    return;
-
-  incrementTickCounter ();
-
-  sc_notifyListener (STATE_TICK, getIdleIncounter ());
-
-  if (getIdleIncounter () > 0)
     {
-      setIsJustIdleCompleted (1);
-      decrementIdleIncounter ();
-      sc_notifyListener (STATE_INCOUNTER_UPDATE, getIdleIncounter ());
-      sc_notifyListener (STATE_POST_TICK, getIdleIncounter ());
-      if (getIdleIncounter () > 0)
+
+      if (isRunningVar == 1)
+        sc_notifyListener (STATE_IS_RUNNING, sc_isRunning ());
+      isRunningVar = 0;
+      return;
+    }
+
+  if (isRunningVar == 0)
+    sc_notifyListener (STATE_IS_RUNNING, sc_isRunning ());
+  isRunningVar = 1;
+
+  tickCounter++;
+
+  sc_notifyListener (STATE_TICK, idleIncounter);
+
+  if (idleIncounter > 0)
+    {
+      isIdleJustCompleted = 1;
+      idleIncounter--;
+      sc_notifyListener (STATE_INCOUNTER_UPDATE, idleIncounter);
+      sc_notifyListener (STATE_POST_TICK, idleIncounter);
+      if (idleIncounter > 0)
         return;
     }
 
-  CU (signo);
+  CU (SIGALRM);
 
-  if (getIdleIncounter () == 0)
+  if (idleIncounter == 0)
     forceTick = 0;
 
-  sc_notifyListener (STATE_POST_TICK, getIdleIncounter ());
+  sc_notifyListener (STATE_POST_TICK, idleIncounter);
 
-  sc_regGet (REG_ALL, &flags);
-  if (flags != lastFlags)
-    sc_notifyListener (STATE_FLAG_UPDATE, 0);
-
-  setIsJustIdleCompleted (0);
+  isIdleJustCompleted = 0;
 }
 
 void

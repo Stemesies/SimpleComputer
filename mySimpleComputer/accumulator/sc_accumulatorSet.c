@@ -1,9 +1,14 @@
-#include "../sc_variables.h"
+#include <mySimpleComputer/sc_variables.h>
 
 int
 sc_accumulatorSet (int value)
 {
+  if (checkCellOverflow (value))
+    return -1;
 
-  setAccumulator (value);
+  if (value == NEGATIVE_ZERO)
+    return -2;
+
+  accumulator = value;
   return 0;
 }

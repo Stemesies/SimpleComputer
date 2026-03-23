@@ -1,8 +1,6 @@
-#include "include/mySimpleComputer.h"
 #include <console/console.h>
 #include <include/myReadKey.h>
 #include <include/myTerm.h>
-#include <unistd.h>
 
 void
 im_writeAccumulator ()
@@ -25,7 +23,6 @@ im_writeAccumulator ()
       printAccumulator ();
       mt_gotoXY (RAM_WIDTH + 3 + 4, 2);
       printCellValue (value, BLACK, GREEN);
-      printTerm (-2, 1);
       return;
     }
 
@@ -34,33 +31,14 @@ im_writeAccumulator ()
 
   mt_gotoXY (0, COMMAND_LINE_Y);
   mt_delline ();
-  mt_setfgcolor (RED);
-  switch (result)
+
+  if (result == 1)
     {
-    case 1:
       mt_setdefaultcolor ();
       printAccumulator ();
-      break;
-
-    case -20:
-      write (1, "Illegal cell format and/or illegal symbols.", 44);
-      break;
-    case -10:
-      write (1, "Illegal sign. Allowed only '+' or '-'.", 39);
-      break;
-    case -2:
-      write (1, "Command field overflow.", 24);
-      break;
-    case -3:
-      write (1, "Operand field overflow.", 24);
-      break;
-    case -11:
-      write (1, "Command validator: command out of bounds.", 42);
-      break;
-    default:
-      write (1, "Unknown error", 14);
+      return;
     }
-  mt_setdefaultcolor ();
+  invalidCellExplain (result);
 }
 
 void
@@ -70,8 +48,7 @@ im_accumulator ()
   int notShouldExit = 1;
 
   hideSelectedCell ();
-  bc_box (ACCUMULATOR_OFFSET_X, 0, ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH, 3,
-          NOTHING, NOTHING, " Аккумулятор ", BLACK, RED);
+  init_drawAccumulatorBox (BLACK, RED);
   printAccumulator ();
 
   while (notShouldExit)
@@ -97,10 +74,12 @@ im_accumulator ()
         }
     }
 
-  bc_box (ACCUMULATOR_OFFSET_X, 0, ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH, 3,
-          NOTHING, NOTHING, " Аккумулятор ", RED, NOTHING);
+  init_drawAccumulatorBox (RED, NOTHING);
   printAccumulator ();
   printSelectedCell ();
+
+  mt_gotoXY (0, COMMAND_LINE_Y);
+  mt_delline ();
 }
 
 void
@@ -126,7 +105,6 @@ im_writeIncounter ()
       printCounters ();
       mt_gotoXY (RAM_WIDTH + 3 + 14, INCOUNTER_OFFSET_Y + 1);
       printCellValue (value, BLACK, GREEN);
-      printTerm (-3, 1);
       printCommand ();
 
       return;
@@ -137,33 +115,15 @@ im_writeIncounter ()
 
   mt_gotoXY (0, COMMAND_LINE_Y);
   mt_delline ();
-  mt_setfgcolor (RED);
-  switch (result)
+
+  if (result == 1)
     {
-    case 1:
       mt_setdefaultcolor ();
       printCounters ();
-      break;
-
-    case -20:
-      write (1, "Illegal cell format and/or illegal symbols.", 44);
-      break;
-    case -10:
-      write (1, "Illegal sign. Allowed only '+' or '-'.", 39);
-      break;
-    case -2:
-      write (1, "Command field overflow.", 24);
-      break;
-    case -3:
-      write (1, "Operand field overflow.", 24);
-      break;
-    case -11:
-      write (1, "Command validator: command out of bounds.", 42);
-      break;
-    default:
-      write (1, "Unknown error", 14);
+      return;
     }
-  mt_setdefaultcolor ();
+
+  invalidCellExplain (result);
 }
 
 void
@@ -173,9 +133,7 @@ im_incounter ()
   int notShouldExit = 1;
 
   hideSelectedCell ();
-  bc_box (ACCUMULATOR_OFFSET_X, INCOUNTER_OFFSET_Y,
-          ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH, INCOUNTER_OFFSET_Y + 3,
-          NOTHING, NOTHING, " Счетчик  команд ", BLACK, RED);
+  init_drawIncounterBox (BLACK, RED);
   printCounters ();
 
   while (notShouldExit)
@@ -201,9 +159,10 @@ im_incounter ()
         }
     }
 
-  bc_box (ACCUMULATOR_OFFSET_X, INCOUNTER_OFFSET_Y,
-          ACCUMULATOR_OFFSET_X + MINI_BLOCK_WIDTH, INCOUNTER_OFFSET_Y + 3,
-          NOTHING, NOTHING, " Счетчик  команд ", RED, NOTHING);
+  init_drawIncounterBox (RED, NOTHING);
   printCounters ();
   printSelectedCell ();
+
+  mt_gotoXY (0, COMMAND_LINE_Y);
+  mt_delline ();
 }

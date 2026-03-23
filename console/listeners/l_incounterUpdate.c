@@ -8,7 +8,7 @@ getCurrentCommandName ()
 {
   int s, o;
   int command;
-  Command *commands = getCommands ();
+  Command *commands = sc_getCommands ();
   sc_incounterGet (&command);
   sc_memoryGet (command, &command);
   sc_commandDecode (command, &s, &command, &o);
@@ -40,14 +40,14 @@ l_incounterUpdate (int idleCounter)
       tickLast = sc_tickCounter ();
     }
   mt_gotoXY (3, LOW_OFFSET_Y + 2);
-  print ("TickCounter: %d      ", sc_tickCounter ());
+  writef ("TickCounter: %d      ", sc_tickCounter ());
 
   mt_gotoXY (3, LOW_OFFSET_Y + 3);
-  print ("Current instruction ticks: %d     ", sc_tickCounter () - tickLast);
+  writef ("Current instruction ticks: %d     ", sc_tickCounter () - tickLast);
 
   mt_gotoXY (3, LOW_OFFSET_Y + 4);
-  print ("Current command: %s Idle: %d      ", getCurrentCommandName (),
-         idleCounter);
+  writef ("Current command: %s Idle: %d      ", getCurrentCommandName (),
+          idleCounter);
 
   printCounters ();
   printCommand ();

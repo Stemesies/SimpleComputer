@@ -1,4 +1,4 @@
-#include "../sc_variables.h"
+#include <mySimpleComputer/sc_variables.h>
 #include <stdio.h>
 
 int
@@ -12,7 +12,7 @@ sc_memorySave (char *filename)
   if (file == NULL)
     return -2;
 
-  size_t count = fwrite (getMemory (), sizeof (int), MEMORY_SIZE, file);
+  size_t count = fwrite (memory, sizeof (int), MEMORY_SIZE, file);
 
   fclose (file);
 

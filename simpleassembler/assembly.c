@@ -42,7 +42,7 @@ determineCommand (int line, char *command, char *operand, int *encoded)
       return 0;
     }
 
-  Command *commands = getCommands ();
+  Command *commands = sc_getCommands ();
   for (int i = 0; i < COMMANDS_COUNT_TRUNCED; i++)
     {
       if (strcmp (command, commands[i].command) != 0)

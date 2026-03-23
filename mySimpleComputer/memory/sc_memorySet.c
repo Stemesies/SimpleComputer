@@ -1,16 +1,15 @@
-#include "../sc_variables.h"
+#include <mySimpleComputer/sc_variables.h>
 
 int
 sc_memorySet (int address, int value)
 {
 
-  if (address < 0 || address > MEMORY_SIZE)
+  if (checkAddressOverflow (address))
     return -1;
 
-  // int validatorResult = sc_commandValidate (value);
-  // if (validatorResult != 0)
-  //   return validatorResult;
+  if (value == NEGATIVE_ZERO)
+    return -2;
 
-  getMemory ()[address] = value;
+  memory[address] = value;
   return 0;
 }

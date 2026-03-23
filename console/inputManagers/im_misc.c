@@ -1,9 +1,7 @@
 #include <console/console.h>
 #include <include/myReadKey.h>
-#include <include/mySimpleComputer.h>
 #include <include/myTerm.h>
 #include <signal.h>
-#include <unistd.h>
 
 void
 im_memorySave ()
@@ -52,11 +50,7 @@ im_memoryLoad ()
     {
     case 0:
       write (1, "Loaded successfully.", 21);
-      printMemory ();
-      printAccumulator ();
-      printCounters ();
-      printIncounterCell ();
-      printSelectedCell ();
+      l_reset ();
       break;
     case -2:
       write (1, "Can't open file. Is path valid?", 32);

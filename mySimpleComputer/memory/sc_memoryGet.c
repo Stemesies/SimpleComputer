@@ -1,15 +1,15 @@
-#include "../sc_variables.h"
+#include <mySimpleComputer/sc_variables.h>
 
 int
 sc_memoryGet (int address, int *value)
 {
 
-  if (address < 0 || address > MEMORY_SIZE)
+  if (value == NULL)
     return -1;
 
-  if (value == 0 /* Null */)
+  if (checkAddressOverflow (address))
     return -1;
 
-  *value = getMemory ()[address];
+  *value = memory[address];
   return 0;
 }

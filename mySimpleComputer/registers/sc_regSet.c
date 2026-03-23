@@ -1,5 +1,4 @@
-#include "../sc_variables.h"
-#include <include/mySimpleComputer.h>
+#include <mySimpleComputer/sc_variables.h>
 
 int
 sc_regSet (int regaddr, int value)
@@ -18,7 +17,8 @@ sc_regSet (int regaddr, int value)
   if ((value & (~regaddr)) > 0)
     return -2;
 
-  setFlagRegister ((getFlagRegister () & (~regaddr)) | value);
+  flagRegister = ((flagRegister & (~regaddr)) | value);
+  sc_notifyListener (STATE_FLAG_UPDATE, 0);
 
   return 0;
 }

@@ -86,9 +86,8 @@ systemListener (int key, int options)
       write (1, "2 гига 2 ядра", 22);
       break;
     case STATE_RESET:
-      printSelectedCell ();
+      l_reset ();
       mt_gotoXY (0, COMMAND_LINE_Y);
-      mt_delline ();
       break;
     case STATE_READ_REQUEST:;
       if (l_readRequest (options) != 0)
@@ -113,11 +112,7 @@ main (int argc, char *argv[])
 
   init_screen ();
 
-  l_incounterUpdate (0);
-  printMemory ();
-  printAccumulator ();
-  printFlags ();
-  updateTerm ();
+  l_reset ();
 
   moveSelectedCell (0);
   sc_setStateListener (systemListener);
@@ -125,7 +120,7 @@ main (int argc, char *argv[])
 
   int notShouldExit = 1;
   Keys key = K_0;
-  int isIdle;
+  int isRunningVar;
 
   while (notShouldExit)
     {
@@ -133,33 +128,33 @@ main (int argc, char *argv[])
       mt_gotoXY (0, COMMAND_LINE_Y);
       rk_readkey (&key);
 
-      sc_regGet (REG_TICK_IGNORE, &isIdle);
+      isRunningVar = sc_isRunning ();
 
       switch (key)
         {
 
         case K_s:
-          if (isIdle != 0)
+          if (isRunningVar == 0)
             im_memorySave ();
           break;
 
         case K_l:
-          if (isIdle != 0)
+          if (isRunningVar == 0)
             im_memoryLoad ();
           break;
 
         case K_t:
-          if (isIdle != 0)
+          if (isRunningVar == 0)
             ICR_tick ();
           break;
 
         case K_i:
-          if (isIdle != 0)
+          if (isRunningVar == 0)
             im_reset ();
           break;
 
         case K_r:
-          if (isIdle != 0)
+          if (isRunningVar == 0)
             sc_regSet (REG_TICK_IGNORE, 0);
           break;
 
@@ -184,17 +179,17 @@ main (int argc, char *argv[])
           break;
 
         case K_enter:
-          if (isIdle != 0)
+          if (isRunningVar == 0)
             im_editCell ();
           break;
 
         case K_F5:
-          if (isIdle != 0)
+          if (isRunningVar == 0)
             im_accumulator ();
           break;
 
         case K_F6:
-          if (isIdle != 0)
+          if (isRunningVar == 0)
             im_incounter ();
 
         default:

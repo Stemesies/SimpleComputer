@@ -3,25 +3,37 @@
 
 #include "../include/mySimpleComputer.h"
 
-int *getMemory ();
+#define NEGATIVE_ZERO 16384
+#define checkAddressOverflow(address) (address < 0 || MEMORY_SIZE <= address)
+#define checkCellOverflow(value) (value < 0 || MAX_CELL_VALUE < value)
 
-int getFlagRegister ();
-void setFlagRegister (int value);
+#define idleFor(forr)                                                         \
+  if (isIdleJustCompleted == 0)                                               \
+    {                                                                         \
+      idleIncounter = forr;                                                   \
+      return;                                                                 \
+    }
 
-int getAccumulator ();
-void setAccumulator (int value);
+extern Command commands[];
+extern int simulatonDelaySecs;
+extern int simulatonDelayUsecs;
+extern int memory[MEMORY_SIZE];
+extern int flagRegister;
+extern int accumulator;
+extern int incounter;
 
-int getIncounter ();
-void setIncounter (int value);
+// Счетчик прошедших тактов  с начала запуска.
+extern int tickCounter;
 
-void incrementTickCounter ();
-void resetTickCounter ();
+// Счетчик простоя процессора
+extern char idleIncounter;
 
-char getIdleIncounter ();
-void decrementIdleIncounter ();
-void incrementIdleIncounter (char value);
+// Булевая переменная, обозначающая, что процессор уже простаивал.
+extern int isIdleJustCompleted;
 
-int getIsJustIdleCompleted ();
-void setIsJustIdleCompleted (int value);
+extern int isRunningVar;
+
+int sc_mcMemoryGet (int addr);
+int sc_mcMemorySet (int addr, int value);
 
 #endif

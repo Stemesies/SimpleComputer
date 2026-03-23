@@ -1,6 +1,5 @@
 #include <console/console.h>
 #include <include/myReadKey.h>
-#include <include/mySimpleComputer.h>
 
 void
 l_cellUpdate (int cell)
