@@ -22,6 +22,20 @@ returnFromNegative (int *number)
   *number |= signMask;
 }
 
+#define withNegative(code)                                                    \
+  makeNegative (&accumulatorValue);                                           \
+  makeNegative (&operandValue);                                               \
+  if (1)                                                                      \
+    code if (accumulatorValue > MAX_ABSOLUTE_VALUE                            \
+             || accumulatorValue < -MAX_ABSOLUTE_VALUE)                       \
+    {                                                                         \
+      sc_regSet (REG_OVERFLOW | REG_TICK_IGNORE,                              \
+                 REG_OVERFLOW | REG_TICK_IGNORE);                             \
+      return 2;                                                               \
+    }                                                                         \
+  returnFromNegative (&accumulatorValue);                                     \
+  returnFromNegative (&operandValue)
+
 int
 ALU (int command, int operand)
 {
@@ -40,50 +54,50 @@ ALU (int command, int operand)
   if (sc_accumulatorGet (&accumulatorValue) != 0)
     return -2;
 
-  makeNegative (&accumulatorValue);
-  makeNegative (&operandValue);
-
-  printf ("NEGATIVE accumulator: %d, Operand: %d\n", accumulatorValue,
-          operandValue);
-
   switch (command)
     {
     case 30: // ADD
-      accumulatorValue += operandValue;
+      withNegative ({ accumulatorValue += operandValue; });
       break;
     case 31: // SUB
-      accumulatorValue -= operandValue;
+      withNegative ({ accumulatorValue -= operandValue; });
       break;
     case 32: // DIVIDE
-      if (operandValue == 0)
-        {
-          sc_regSet (REG_ZERO_DIV | REG_TICK_IGNORE,
-                     REG_ZERO_DIV | REG_TICK_IGNORE);
-          sc_notifyListener (STATE_FLAG_UPDATE, 0);
-          return 1;
-        }
-      accumulatorValue /= operandValue;
+      withNegative ({
+        if (operandValue == 0)
+          {
+            sc_regSet (REG_ZERO_DIV | REG_TICK_IGNORE,
+                       REG_ZERO_DIV | REG_TICK_IGNORE);
+            return 1;
+          }
+        accumulatorValue /= operandValue;
+      });
       break;
     case 33: // MUL
-      accumulatorValue *= operandValue;
+      withNegative ({ accumulatorValue *= operandValue; });
+      break;
+    case 70: // RCCR
+      if ((accumulatorValue & signMask) > 0)
+        {
+          sc_regSet (REG_INVALID_COMMAND | REG_TICK_IGNORE,
+                     REG_INVALID_COMMAND | REG_TICK_IGNORE);
+          return 2;
+        }
+      accumulatorValue %= BITS_PER_CELL;
+      printf ("BEFORE accumulator: %d, Operand: %d\n", accumulatorValue,
+              operandValue);
+      int left = operandValue << accumulatorValue;
+      left &= MAX_CELL_VALUE;
+      printf ("LEFT: %d\n", left);
+      accumulatorValue = operandValue >> (BITS_PER_CELL - accumulatorValue);
+      printf ("RIGHT: %d\n", accumulatorValue);
+      accumulatorValue = (left | accumulatorValue);
+      sc_accumulatorSet (accumulatorValue);
+      printf ("RESULT: %d\n\n\n", accumulatorValue);
       break;
     default:
       return -3;
     }
-
-  printf ("RESULT accumulator: %d, Operand: %d\n\n\n", accumulatorValue,
-          operandValue);
-
-  if (accumulatorValue > MAX_ABSOLUTE_VALUE
-      || accumulatorValue < -MAX_ABSOLUTE_VALUE)
-    {
-      sc_regSet (REG_OVERFLOW, REG_OVERFLOW);
-      sc_notifyListener (STATE_FLAG_UPDATE, 0);
-      return 2;
-    }
-
-  returnFromNegative (&accumulatorValue);
-  returnFromNegative (&operandValue);
 
   printf ("accumulator: %d, Operand: %d. MAX: %d\n\n\n", accumulatorValue,
           operandValue, MAX_CELL_VALUE);

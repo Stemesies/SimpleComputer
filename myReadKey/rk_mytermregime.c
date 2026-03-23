@@ -27,4 +27,5 @@ rk_mytermregime (int regime, int vtime, int vmin, int echo, int sigint)
   currentRegime->c_cc[VMIN] = vmin;
 
   tcsetattr (0, TCSANOW, currentRegime);
+  return 0;
 }

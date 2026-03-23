@@ -16,6 +16,7 @@ typedef enum keys
   K_l = 'l',
   K_r = 'r',
   K_s = 's',
+  K_t = 't',
   K_z = 'z',
   K_A = 'A',
   K_Z = 'Z',

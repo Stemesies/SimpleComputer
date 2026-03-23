@@ -2,6 +2,7 @@
 #include "console/console.h"
 #include <include/mySimpleComputer.h>
 #include <include/myTerm.h>
+#include <include/utils.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -17,7 +18,7 @@ int expected[MEMORY_SIZE];
 
 int expectedFlags = -1;
 int expectedIncounterPosition = -1;
-int expectedAccumulator = -1;
+int expectedAccumulator = 0;
 int expectedTickCount = -1;
 
 int testStarted = 0;
@@ -34,14 +35,6 @@ int testFinished = 0;
 #define sinitMemory(i, chara)                                                 \
   initialMemory[i] = sencode (chara);                                         \
   expected[i] = initialMemory[i];
-
-#define print(str, formats...)                                                \
-  if (1)                                                                      \
-    {                                                                         \
-      char amogus[300] = "";                                                  \
-      sprintf (amogus, str, formats);                                         \
-      write (1, amogus, strlen (amogus));                                     \
-    }
 
 int
 encode (int sign, int command, int operand)
@@ -232,27 +225,33 @@ listener (int state, int operand)
           printTestResults ();
         }
       break;
-    case STATE_INCOUNTER_UPDATE:;
+    case STATE_POST_TICK:
+      animationStep++;
+      if (animationStep > 3)
+        animationStep = 0;
+      // fall through
+    case STATE_TICK:;
       int val = 0;
       sc_incounterGet (&val);
       write (1, "\033[F", 4);
       mt_delline ();
-      print ("[ %d ➜ %d] Test '%s' is running (◕‿◕✿) ",
-             sc_tickCounter (), val, testName);
       if (operand > 0)
         {
           mt_setbgcolor (RED);
           mt_setfgcolor (1);
           mt_setfgcolor (BLACK);
-          print ("<blocked %d >", operand);
+          print ("<blocked %2d>", operand);
           mt_setdefaultcolor ();
           write (1, " ", 1);
         }
-      print ("... %c\n", animation[animationStep]);
+      else
+        {
+          write (1, "             ", 14);
+        }
+      print ("[ %d ➜ %d] Test '%s' is running ", sc_tickCounter (), val,
+             testName);
 
-      animationStep++;
-      if (animationStep > 3)
-        animationStep = 0;
+      print ("... %c\n", animation[animationStep]);
     }
 
   return 0;
@@ -297,8 +296,6 @@ test ()
 
 #define NOP 0
 #define CPUINFO 1
-#define READ 10
-#define WRITE 11
 #define LOAD 20
 #define STORE 21
 #define ADD 30
@@ -319,7 +316,9 @@ main (int argc, char *argv[])
     runOnly = argv[1];
 
   sc_setStateListener (listener);
+  IG_setTickDelay (0, 50000);
   IG_init ();
+  write (1, "\n", 1);
 
   runTest ("HALT", {
     expectedTickCount = 1;
@@ -502,7 +501,7 @@ main (int argc, char *argv[])
   Проверка на правильную обработку положительного переполнения.
   */
   runTest ("ADD-Overflow", {
-    expectedTickCount = 12;
+    expectedTickCount = 11;
     expectedFlags = REG_OVERFLOW;
 
     sc_accumulatorSet (sencode ("+7f7f"));
@@ -515,7 +514,7 @@ main (int argc, char *argv[])
   Проверка на правильную обработку отрицательного переполнения.
   */
   runTest ("ADD-NegativeOverflow", {
-    expectedTickCount = 12;
+    expectedTickCount = 11;
     expectedFlags = REG_OVERFLOW;
 
     sc_accumulatorSet (sencode ("-7f7f"));
@@ -595,7 +594,7 @@ main (int argc, char *argv[])
   Проверка на правильную обработку положительного переполнения.
   */
   runTest ("SUB-Overflow", {
-    expectedTickCount = 12;
+    expectedTickCount = 11;
     expectedFlags = REG_OVERFLOW;
 
     sc_accumulatorSet (sencode ("+7f7f"));
@@ -608,7 +607,7 @@ main (int argc, char *argv[])
   Проверка на правильную обработку отрицательного переполнения.
   */
   runTest ("SUB-NegativeOverflow", {
-    expectedTickCount = 12;
+    expectedTickCount = 11;
     expectedFlags = REG_OVERFLOW;
 
     sc_accumulatorSet (sencode ("-7f7f"));
@@ -776,7 +775,7 @@ main (int argc, char *argv[])
   Проверка на правильную обработку положительного переполнения.
   */
   runTest ("MUL-Overflow", {
-    expectedTickCount = 12;
+    expectedTickCount = 11;
     expectedFlags = REG_OVERFLOW;
 
     sc_accumulatorSet (sencode ("+7f7f"));
@@ -789,13 +788,259 @@ main (int argc, char *argv[])
   Проверка на правильную обработку отрицательного переполнения.
   */
   runTest ("MUL-NegativeOverflow", {
-    expectedTickCount = 12;
+    expectedTickCount = 11;
     expectedFlags = REG_OVERFLOW;
 
     sc_accumulatorSet (sencode ("-7f7f"));
     initMemory (0, 0, MUL, 2);
     initMemory (1, 0, HALT, 0);
     sinitMemory (2, "+7f7f");
+  });
+
+  /**
+
+
+  Переходы
+
+
+  */
+
+  /*
+  Проверка на прыжок. Должен перейти в конкретную точку.
+  */
+  runTest ("JUMP", {
+    expectedTickCount = 2;
+    expectedIncounterPosition = 3;
+    expectedFlags = 0;
+
+    initMemory (0, 0, JUMP, 3);
+    initMemory (1, 0, HALT, 0);
+    initMemory (3, 0, HALT, 0);
+    initMemory (5, 0, HALT, 0);
+  });
+
+  /*
+  Проверка на условный прыжок. НЕ Должен перейти в конкретную точку.
+  */
+  runTest ("JNEG", {
+    expectedTickCount = 2;
+    expectedIncounterPosition = 1;
+    expectedFlags = 0;
+
+    initMemory (0, 0, JNEG, 3);
+    initMemory (1, 0, HALT, 0);
+    initMemory (3, 0, HALT, 0);
+    initMemory (5, 0, HALT, 0);
+  });
+
+  /*
+  Проверка на условный прыжок. НЕ Должен перейти в конкретную точку.
+  */
+  runTest ("JNEG-Negative", {
+    expectedTickCount = 2;
+    expectedAccumulator = sencode ("-0010");
+    expectedIncounterPosition = 3;
+    expectedFlags = 0;
+
+    sc_accumulatorSet (sencode ("-0010"));
+    initMemory (0, 0, JNEG, 3);
+    initMemory (1, 0, HALT, 0);
+    initMemory (3, 0, HALT, 0);
+    initMemory (5, 0, HALT, 0);
+  });
+
+  /*
+  Проверка на условный прыжок. НЕ Должен перейти в конкретную точку.
+  */
+  runTest ("JZ", {
+    expectedTickCount = 2;
+    expectedIncounterPosition = 1;
+    expectedFlags = 0;
+
+    sc_accumulatorSet (sencode ("+0002"));
+    initMemory (0, 0, JZ, 3);
+    initMemory (1, 0, HALT, 0);
+    initMemory (3, 0, HALT, 0);
+    initMemory (5, 0, HALT, 0);
+  });
+
+  /*
+  Проверка на условный прыжок. НЕ Должен перейти в конкретную точку.
+  */
+  runTest ("JZ-Negative", {
+    expectedTickCount = 2;
+    expectedIncounterPosition = 1;
+    expectedFlags = 0;
+
+    sc_accumulatorSet (sencode ("-0002"));
+    initMemory (0, 0, JZ, 3);
+    initMemory (1, 0, HALT, 0);
+    initMemory (3, 0, HALT, 0);
+    initMemory (5, 0, HALT, 0);
+  });
+
+  /*
+  Проверка на условный прыжок. Должен перейти в конкретную точку.
+  */
+  runTest ("JZ-Zero", {
+    expectedTickCount = 2;
+    expectedIncounterPosition = 3;
+    expectedFlags = 0;
+
+    sc_accumulatorSet (sencode ("+0000"));
+    initMemory (0, 0, JZ, 3);
+    initMemory (1, 0, HALT, 0);
+    initMemory (3, 0, HALT, 0);
+    initMemory (5, 0, HALT, 0);
+  });
+
+  /**
+
+
+  Остальное
+
+
+  */
+
+  /*
+   1 110 0000 100 0000 << 1 = 1 100 0001 000 0001
+   28736 << 1 = 24705
+  */
+  runTest ("RCCR", {
+    expectedTickCount = 12;
+    expectedAccumulator = 24705;
+    expectedFlags = 0;
+
+    sc_accumulatorSet (1);
+    initMemory (0, 0, RCCR, 2);
+    initMemory (1, 0, HALT, 0);
+    dinitMemory (2, 28736);
+  });
+
+  /*
+   По сути сдвиг не должен быть отрицательным. Так ведь?
+  */
+  runTest ("RCCR-Negative", {
+    expectedTickCount = 11;
+    expectedFlags = REG_INVALID_COMMAND;
+
+    sc_accumulatorSet (sencode ("-0010"));
+    initMemory (0, 0, RCCR, 2);
+    initMemory (1, 0, HALT, 0);
+    dinitMemory (2, 28736);
+  });
+
+  /*
+   Раз этот сдвиг циклический, он должен пойти по второму кругу
+  */
+  runTest ("RCCR-Double", {
+    expectedTickCount = 12;
+    expectedAccumulator = 24705;
+    expectedFlags = 0;
+
+    sc_accumulatorSet (1 + BITS_PER_CELL);
+    initMemory (0, 0, RCCR, 2);
+    initMemory (1, 0, HALT, 0);
+    dinitMemory (2, 28736);
+  });
+
+  /*
+   Раз этот сдвиг циклический, он должен пойти по третьему кругу
+
+   17 % 7 = 3;
+   2 целых круга, сдвиг 3.
+   1 110 0000 100 0000 << 3 = 0 000 0100 000 0111
+   28736 << 1 = 24705
+  */
+  runTest ("RCCR-Tripple", {
+    expectedTickCount = 12;
+    expectedAccumulator = 519;
+    expectedFlags = 0;
+
+    sc_accumulatorSet (3 + 2 * BITS_PER_CELL);
+    initMemory (0, 0, RCCR, 2);
+    initMemory (1, 0, HALT, 0);
+    dinitMemory (2, 28736);
+  });
+
+  /*
+  Если сдвига нет, ничего менять он не должен.
+  */
+  runTest ("RCCR-Zero", {
+    expectedTickCount = 12;
+    expectedAccumulator = 28736;
+    expectedFlags = 0;
+
+    sc_accumulatorSet (0);
+    initMemory (0, 0, RCCR, 2);
+    initMemory (1, 0, HALT, 0);
+    dinitMemory (2, 28736);
+  });
+
+  runTest ("MOVA", {
+    expectedTickCount = 22;
+    expectedAccumulator = 3;
+    expectedFlags = 0;
+
+    sc_accumulatorSet (3);
+    initMemory (0, 0, MOVA, 2);
+    initMemory (1, 0, HALT, 0);
+    dinitMemory (2, 28736);
+    expected[3] = 28736;
+  });
+
+  runTest ("MOVA-Outbounds", {
+    expectedTickCount = 21;
+    expectedIncounterPosition = 0;
+    expectedFlags = REG_OUT_OF_BOUNDS;
+
+    sc_accumulatorSet (129);
+    initMemory (0, 0, MOVA, 2);
+    initMemory (1, 0, HALT, 0);
+    dinitMemory (2, 28736);
+  });
+
+  runTest ("MOVA-OutboundsNegative", {
+    expectedTickCount = 21;
+    expectedIncounterPosition = 0;
+    expectedFlags = REG_OUT_OF_BOUNDS;
+
+    sc_accumulatorSet (sencode ("-0001"));
+    initMemory (0, 0, MOVA, 2);
+    initMemory (1, 0, HALT, 0);
+    dinitMemory (2, 28736);
+  });
+
+  /*
+
+
+  Готовые программы.
+
+
+  */
+
+  /*
+  for( i in 0 until 5 )
+  */
+  runTest ("ForLoop", {
+    expectedTickCount = 230;
+    expectedIncounterPosition = 6;
+    expectedFlags = 0;
+
+    // [7] - 1
+    // [8] - i
+    // [9] - 5
+
+    initMemory (0, 0, LOAD, 8);
+    initMemory (1, 0, ADD, 7);
+    initMemory (2, 0, STORE, 8);
+    initMemory (3, 0, SUB, 9);
+    initMemory (4, 0, JZ, 6);
+    initMemory (5, 0, JUMP, 0);
+    initMemory (6, 0, HALT, 0);
+    sinitMemory (7, "+0001");
+    expected[8] = sencode ("+0005");
+    sinitMemory (9, "+0005");
   });
 
   return 0;

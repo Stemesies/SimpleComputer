@@ -15,4 +15,5 @@ rk_mytermsave ()
 
   for (int i; i < NCCS; i++)
     saved->c_cc[i] = current->c_cc[i];
+  return 0;
 }

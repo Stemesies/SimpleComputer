@@ -62,11 +62,13 @@ void printSelectedCell ();
 void hideSelectedCell ();
 void moveSelectedCell (int to);
 
+// Input managers
+
 void im_memoryLeft ();
 void im_memoryRight ();
 void im_memoryUp ();
 void im_memoryDown ();
-void im_memoryWrite ();
+void im_editCell ();
 
 void im_accumulator ();
 void im_incounter ();
@@ -76,5 +78,10 @@ void im_reset ();
 void im_memorySave ();
 void im_memoryLoad ();
 
-void p_determineCommand ();
+// Listeners
+
+int l_readRequest (int destAddress);
+void l_cellUpdate (int cell);
+void l_incounterUpdate (int idleCounter);
+
 #endif

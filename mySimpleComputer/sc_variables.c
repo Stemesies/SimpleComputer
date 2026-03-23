@@ -94,7 +94,7 @@ decrementIdleIncounter ()
 void
 incrementIdleIncounter (char value)
 {
-  idleIncounter += value - 1;
+  idleIncounter += value;
 }
 
 int

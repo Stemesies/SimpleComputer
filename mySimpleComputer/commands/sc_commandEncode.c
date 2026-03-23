@@ -16,6 +16,9 @@ sc_commandEncode (int sign, int command, int operand, int *value)
   if (value == 0 /* Null */)
     return -4;
 
+  if (sign == 1 && command == 0 && operand == 0)
+    return -5;
+
   int out = (sign << BITS_PER_COMMAND) | command;
   out = (out << BITS_PER_OPERAND) | operand;
 

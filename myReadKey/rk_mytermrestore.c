@@ -15,4 +15,5 @@ rk_mytermrestore ()
   for (int i; i < NCCS; i++)
     current->c_cc[i] = saved->c_cc[i];
   tcsetattr (0, TCSANOW, current);
+  return 0;
 }

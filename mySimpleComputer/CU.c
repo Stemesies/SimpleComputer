@@ -15,7 +15,6 @@ CU (int signal)
   if (signal == SIGUSR1)
     {
       sc_reset ();
-      sc_notifyListener (STATE_RESET, 0);
       return;
     }
 
@@ -24,7 +23,6 @@ CU (int signal)
     {
       sc_regSet (REG_OUT_OF_BOUNDS | REG_TICK_IGNORE,
                  REG_OUT_OF_BOUNDS | REG_TICK_IGNORE);
-      sc_notifyListener (STATE_FLAG_UPDATE, 0);
       return;
     }
 
@@ -36,7 +34,6 @@ CU (int signal)
     {
       sc_regSet (REG_INVALID_COMMAND | REG_TICK_IGNORE,
                  REG_INVALID_COMMAND | REG_TICK_IGNORE);
-      sc_notifyListener (STATE_FLAG_UPDATE, 0);
       return;
     }
 
@@ -48,10 +45,18 @@ CU (int signal)
       sc_notifyListener (STATE_CPUINFO, 0);
       break;
     case 10: // READ
+      sc_regGet (REG_TICK_IGNORE, &tmpVar);
       sc_regSet (REG_TICK_IGNORE, REG_TICK_IGNORE);
-      sc_notifyListener (STATE_FLAG_UPDATE, 0);
-      if (sc_notifyListener (STATE_READ_REQUEST, operand) != 0)
-        return;
+      if (tmpVar == 0)
+        {
+          if (sc_notifyListener (STATE_READ_REQUEST, operand) != 0)
+            return;
+        }
+      else
+        {
+          if (sc_notifyListener (STATE_READ_REQUEST, -operand) != 0)
+            return;
+        }
       break;
     case 11: // WRITE
       if (getIsJustIdleCompleted () == 0)
@@ -85,29 +90,45 @@ CU (int signal)
     case 31: // SUB
     case 32: // DIVIDE
     case 33: // MUL
-    case 70: // RCCL
+    case 70: // RCCR
       if (ALU (command, operand) == 1)
         return;
       break;
     case 40: // JUMP
-      currentInstruction = operand;
+      currentInstruction = operand - 1;
       break;
     case 41: // JNEG
       sc_accumulatorGet (&tmpVar);
-      sc_commandDecode (tmpVar, &tmpVar, NULL, NULL);
+      sc_commandDecode (tmpVar, &tmpVar, &command, &command);
       if (tmpVar == 1)
-        currentInstruction = operand;
+        currentInstruction = operand - 1;
       break;
     case 42: // JZ
       sc_accumulatorGet (&tmpVar);
       if (tmpVar == 0)
-        currentInstruction = operand;
+        currentInstruction = operand - 1;
       break;
     case 43: // HALT
       sc_regSet (REG_TICK_IGNORE, REG_TICK_IGNORE);
-      sc_notifyListener (STATE_FLAG_UPDATE, 0);
+      return;
+    case 71: // MOVA
+      if (getIsJustIdleCompleted () == 0)
+        {
+          incrementIdleIncounter (20);
+          return;
+        }
+      int source;
+      sc_memoryGet (operand, &source);
+      sc_accumulatorGet (&tmpVar);
+      if (sc_memorySet (tmpVar, source) == -1)
+        {
+          sc_regSet (REG_OUT_OF_BOUNDS | REG_TICK_IGNORE,
+                     REG_OUT_OF_BOUNDS | REG_TICK_IGNORE);
+          return;
+        }
       break;
     }
 
   sc_incounterSet (currentInstruction + 1);
+  sc_notifyListener (STATE_INCOUNTER_UPDATE, 0);
 }

@@ -2,8 +2,6 @@
 #ifndef MY_SIMPLE_COMPUTER_HEADER
 #define MY_SIMPLE_COMPUTER_HEADER
 
-#define TICK_DELAY 500
-
 #define STATE_MEMORY_UPDATE 0
 #define STATE_ACCUMULATOR_UPDATE 1
 #define STATE_INCOUNTER_UPDATE 2
@@ -14,6 +12,7 @@
 #define STATE_RESET 7
 #define STATE_CPUINFO 8
 #define STATE_TICK 9
+#define STATE_POST_TICK 10
 
 #define REG_ALL 0x1F
 // P
@@ -32,6 +31,7 @@
 
 #define BITS_PER_COMMAND 7
 #define BITS_PER_OPERAND 7
+#define BITS_PER_CELL (BITS_PER_COMMAND + BITS_PER_OPERAND + 1)
 #define MAX_COMMAND_SIZE 0x7F
 #define MAX_OPERAND_SIZE 0x7F
 #define MAX_ABSOLUTE_VALUE 0x3FFF
@@ -94,7 +94,8 @@ void ICR (int signo);
 void IG_init ();
 
 void sc_setStateListener (int listener (int signal, int value));
-
 int sc_notifyListener (int signal, int value);
+void IG_setTickDelay (int delaySec, int delayUsec);
+void ICR_tick ();
 
 #endif
