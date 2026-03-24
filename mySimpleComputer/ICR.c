@@ -14,11 +14,11 @@ ICR (int signo)
       return;
     }
 
+  tickCommandStage = 0;
   sc_regGet (REG_TICK_IGNORE, &skippingTicks);
 
   if (skippingTicks && !forceTick)
     {
-
       if (isRunningVar == 1)
         sc_notifyListener (STATE_IS_RUNNING, sc_isRunning ());
       isRunningVar = 0;
@@ -41,6 +41,7 @@ ICR (int signo)
       sc_notifyListener (STATE_POST_TICK, idleIncounter);
       if (idleIncounter > 0)
         return;
+      commandStage++;
     }
 
   CU (SIGALRM);

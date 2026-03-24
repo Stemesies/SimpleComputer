@@ -21,6 +21,9 @@ char idleIncounter = 0;
 int isIdleJustCompleted = 0;
 int isRunningVar = 0;
 
+int tickCommandStage = 0;
+int commandStage = 0;
+
 int
 sc_tickCounter ()
 {

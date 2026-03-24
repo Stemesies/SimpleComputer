@@ -5,7 +5,7 @@
 int size = 0;
 
 int
-sc_mcMemoryGet (int address)
+_sc_mcMemoryGet (int address, int *value)
 {
 
   if (checkAddressOverflow (address))
@@ -14,14 +14,21 @@ sc_mcMemoryGet (int address)
       return -1;
     }
 
-  //   for (int i = 0; i < 10; i++)
-  //       pause ();
+  if (commandStage <= tickCommandStage && !isIdleJustCompleted)
+    {
+      idleIncounter += 10;
+      return 1;
+    }
+  isIdleJustCompleted = 0;
+  tickCommandStage++;
 
-  return memory[address];
+  if (value != NULL)
+    *value = memory[address];
+  return 0;
 }
 
 int
-sc_mcMemorySet (int address, int value)
+_sc_mcMemorySet (int address, int value)
 {
 
   if (checkAddressOverflow (address))
@@ -33,11 +40,16 @@ sc_mcMemorySet (int address, int value)
   if (checkCellOverflow (value))
     {
       sc_regEnable (REG_OVERFLOW | REG_TICK_IGNORE);
-      return -1;
+      return -2;
     }
 
-  //   for (int i = 0; i < 10; i++)
-  //     pause ();
+  if (commandStage <= tickCommandStage && !isIdleJustCompleted)
+    {
+      idleIncounter += 10;
+      return 1;
+    }
+  isIdleJustCompleted = 0;
+  tickCommandStage++;
 
   memory[address] = value;
   return 0;

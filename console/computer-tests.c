@@ -16,7 +16,7 @@ int allowExit = 0;
 int initialMemory[MEMORY_SIZE];
 int expected[MEMORY_SIZE];
 
-int expectedFlags = -1;
+int expectedFlags = 0;
 int expectedIncounterPosition = -1;
 int expectedAccumulator = 0;
 int expectedTickCount = -1;
@@ -71,8 +71,8 @@ reset ()
       expected[i] = 0;
     }
   expectedTickCount = -1;
-  expectedAccumulator = -1;
-  expectedFlags = -1;
+  expectedAccumulator = 0;
+  expectedFlags = 0;
   expectedIncounterPosition = -1;
   testStarted = 0;
   testFinished = 0;
@@ -318,7 +318,7 @@ main (int argc, char *argv[])
     runOnly = argv[1];
 
   sc_setStateListener (listener);
-  sc_setSimulationDelay (0, 50000);
+  sc_setSimulationDelay (0, 25000);
   IG_init ();
   write (1, "\n", 1);
 
@@ -424,6 +424,7 @@ main (int argc, char *argv[])
   runTest ("LOAD&STORE", {
     expectedTickCount = 23;
     expectedAccumulator = encode (0, HALT, 0);
+    expectedIncounterPosition = 2;
     expectedFlags = 0;
 
     initMemory (0, 0, LOAD, 2);
@@ -446,6 +447,7 @@ main (int argc, char *argv[])
   runTest ("ADD", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("+0002");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (sencode ("+0001"));
@@ -461,6 +463,7 @@ main (int argc, char *argv[])
   runTest ("ADD-Negative", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("+0000");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (sencode ("+0001"));
@@ -476,6 +479,7 @@ main (int argc, char *argv[])
   runTest ("ADD-DoubleNegative", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("-0002");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (sencode ("-0001"));
@@ -491,6 +495,7 @@ main (int argc, char *argv[])
   runTest ("ADD-Complex", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("+1d52");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (sencode ("-113F"));
@@ -504,6 +509,8 @@ main (int argc, char *argv[])
   */
   runTest ("ADD-Overflow", {
     expectedTickCount = 11;
+    expectedAccumulator = sencode ("+7f7f");
+    expectedIncounterPosition = 0;
     expectedFlags = REG_OVERFLOW;
 
     sc_accumulatorSet (sencode ("+7f7f"));
@@ -517,6 +524,8 @@ main (int argc, char *argv[])
   */
   runTest ("ADD-NegativeOverflow", {
     expectedTickCount = 11;
+    expectedAccumulator = sencode ("-7f7f");
+    expectedIncounterPosition = 0;
     expectedFlags = REG_OVERFLOW;
 
     sc_accumulatorSet (sencode ("-7f7f"));
@@ -539,6 +548,7 @@ main (int argc, char *argv[])
   runTest ("SUB", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("+0000");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (sencode ("+0001"));
@@ -554,6 +564,7 @@ main (int argc, char *argv[])
   runTest ("SUB-Negative", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("+0002");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (sencode ("+0001"));
@@ -569,6 +580,7 @@ main (int argc, char *argv[])
   runTest ("SUB-DoubleNegative", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("+0000");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (sencode ("-0001"));
@@ -584,6 +596,7 @@ main (int argc, char *argv[])
   runTest ("SUB-Complex", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("-4050");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (sencode ("-113F"));
@@ -597,6 +610,8 @@ main (int argc, char *argv[])
   */
   runTest ("SUB-Overflow", {
     expectedTickCount = 11;
+    expectedAccumulator = sencode ("+7f7f");
+    expectedIncounterPosition = 0;
     expectedFlags = REG_OVERFLOW;
 
     sc_accumulatorSet (sencode ("+7f7f"));
@@ -610,6 +625,8 @@ main (int argc, char *argv[])
   */
   runTest ("SUB-NegativeOverflow", {
     expectedTickCount = 11;
+    expectedAccumulator = sencode ("-7f7f");
+    expectedIncounterPosition = 0;
     expectedFlags = REG_OVERFLOW;
 
     sc_accumulatorSet (sencode ("-7f7f"));
@@ -632,6 +649,7 @@ main (int argc, char *argv[])
   runTest ("DIV", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("+0001");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (sencode ("+0002"));
@@ -646,6 +664,7 @@ main (int argc, char *argv[])
   runTest ("DIV-Negative", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("-0001");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (sencode ("+0002"));
@@ -660,6 +679,7 @@ main (int argc, char *argv[])
   runTest ("DIV-DoubleNegative", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("+0001");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (sencode ("-0002"));
@@ -674,6 +694,7 @@ main (int argc, char *argv[])
   runTest ("DIV-Complex", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("-0002");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (133);
@@ -687,6 +708,8 @@ main (int argc, char *argv[])
   */
   runTest ("DIV-Zero", {
     expectedTickCount = 11;
+    expectedAccumulator = 133;
+    expectedIncounterPosition = 0;
     expectedFlags = REG_ZERO_DIV;
 
     sc_accumulatorSet (133);
@@ -709,6 +732,7 @@ main (int argc, char *argv[])
   runTest ("MUL", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("+0004");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (sencode ("+0002"));
@@ -723,6 +747,7 @@ main (int argc, char *argv[])
   runTest ("MUL-Negative", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("-0004");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (sencode ("+0002"));
@@ -737,6 +762,7 @@ main (int argc, char *argv[])
   runTest ("MUL-DoubleNegative", {
     expectedTickCount = 12;
     expectedAccumulator = sencode ("+0004");
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (sencode ("-0002"));
@@ -751,6 +777,7 @@ main (int argc, char *argv[])
   runTest ("MUL-Complex", {
     expectedTickCount = 12;
     expectedAccumulator = 105;
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (21);
@@ -765,6 +792,7 @@ main (int argc, char *argv[])
   runTest ("MUL-Zero", {
     expectedTickCount = 12;
     expectedAccumulator = 0;
+    expectedIncounterPosition = 1;
     expectedFlags = 0;
 
     sc_accumulatorSet (21);
@@ -778,6 +806,8 @@ main (int argc, char *argv[])
   */
   runTest ("MUL-Overflow", {
     expectedTickCount = 11;
+    expectedAccumulator = sencode ("+7f7f");
+    expectedIncounterPosition = 0;
     expectedFlags = REG_OVERFLOW;
 
     sc_accumulatorSet (sencode ("+7f7f"));
@@ -791,6 +821,8 @@ main (int argc, char *argv[])
   */
   runTest ("MUL-NegativeOverflow", {
     expectedTickCount = 11;
+    expectedAccumulator = sencode ("-7f7f");
+    expectedIncounterPosition = 0;
     expectedFlags = REG_OVERFLOW;
 
     sc_accumulatorSet (sencode ("-7f7f"));
@@ -856,6 +888,7 @@ main (int argc, char *argv[])
   */
   runTest ("JZ", {
     expectedTickCount = 2;
+    expectedAccumulator = sencode ("+0002");
     expectedIncounterPosition = 1;
     expectedFlags = 0;
 
@@ -871,6 +904,7 @@ main (int argc, char *argv[])
   */
   runTest ("JZ-Negative", {
     expectedTickCount = 2;
+    expectedAccumulator = sencode ("-0002");
     expectedIncounterPosition = 1;
     expectedFlags = 0;
 
@@ -889,7 +923,6 @@ main (int argc, char *argv[])
     expectedIncounterPosition = 3;
     expectedFlags = 0;
 
-    sc_accumulatorSet (sencode ("+0000"));
     initMemory (0, 0, JZ, 3);
     initMemory (1, 0, HALT, 0);
     initMemory (3, 0, HALT, 0);
@@ -924,6 +957,7 @@ main (int argc, char *argv[])
   */
   runTest ("RCCR-Negative", {
     expectedTickCount = 11;
+    expectedAccumulator = sencode ("-0010");
     expectedFlags = REG_INVALID_COMMAND;
 
     sc_accumulatorSet (sencode ("-0010"));
@@ -992,7 +1026,8 @@ main (int argc, char *argv[])
   });
 
   runTest ("MOVA-Outbounds", {
-    expectedTickCount = 21;
+    expectedTickCount = 11;
+    expectedAccumulator = 129;
     expectedIncounterPosition = 0;
     expectedFlags = REG_OUT_OF_BOUNDS;
 
@@ -1003,7 +1038,8 @@ main (int argc, char *argv[])
   });
 
   runTest ("MOVA-OutboundsNegative", {
-    expectedTickCount = 21;
+    expectedTickCount = 11;
+    expectedAccumulator = sencode ("-0001");
     expectedIncounterPosition = 0;
     expectedFlags = REG_OUT_OF_BOUNDS;
 

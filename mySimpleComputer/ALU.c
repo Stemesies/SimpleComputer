@@ -24,8 +24,9 @@ returnFromNegative (int *number)
   makeNegative (&accumulatorValue);                                           \
   makeNegative (&operandValue);                                               \
   if (1)                                                                      \
-    code if (accumulatorValue > MAX_ABSOLUTE_VALUE                            \
-             || accumulatorValue < -MAX_ABSOLUTE_VALUE)                       \
+    code;                                                                     \
+  if (accumulatorValue > MAX_ABSOLUTE_VALUE                                   \
+      || accumulatorValue < -MAX_ABSOLUTE_VALUE)                              \
     {                                                                         \
       sc_regEnable (REG_OVERFLOW | REG_TICK_IGNORE);                          \
       return 2;                                                               \
@@ -36,17 +37,9 @@ returnFromNegative (int *number)
 int
 ALU (int command, int operand)
 {
-  int operandValue = sc_mcMemoryGet (operand);
+  int operandValue;
   int accumulatorValue = accumulator;
-
-  if (operandValue == -1)
-    return -1;
-
-  if (isIdleJustCompleted == 0)
-    {
-      idleIncounter = 10;
-      return 1;
-    }
+  sc_mcMemoryGet (operand, &operandValue) 1;
 
   switch (command)
     {

@@ -50,19 +50,17 @@ CU (int signal)
       break;
 
     case 11: // WRITE
-      idleFor (10);
-      sc_mcMemoryGet (operand);
+      sc_mcMemoryGet (operand, NULL);
       sc_notifyListener (STATE_WRITE_REQUEST, operand);
       break;
 
     case 20: // LOAD
-      idleFor (10);
-      sc_accumulatorSet (sc_mcMemoryGet (operand));
+      sc_mcMemoryGet (operand, &tmpVar);
+      accumulator = tmpVar;
       sc_notifyListener (STATE_ACCUMULATOR_UPDATE, 0);
       break;
 
     case 21: // STORE
-      idleFor (10);
       sc_mcMemorySet (operand, accumulator);
       sc_notifyListener (STATE_CELL_UPDATE, operand);
       break;
@@ -72,7 +70,7 @@ CU (int signal)
     case 32: // DIVIDE
     case 33: // MUL
     case 70: // RCCR
-      if (ALU (command, operand) == 1)
+      if (ALU (command, operand) != 0)
         return;
       break;
 
@@ -96,11 +94,11 @@ CU (int signal)
       return;
 
     case 71: // MOVA
-      idleFor (20);
-      if (sc_mcMemorySet (accumulator, sc_mcMemoryGet (operand)) == -1)
-        return;
+      sc_mcMemoryGet (operand, &tmpVar);
+      sc_mcMemorySet (accumulator, tmpVar);
       break;
     }
+  commandStage = 0;
   incounter++;
   sc_notifyListener (STATE_INCOUNTER_UPDATE, 0);
 }

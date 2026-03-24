@@ -4,6 +4,7 @@ void
 sc_reset ()
 {
   tickCounter = 0;
+  commandStage = 0;
 
   sc_memoryInit ();
   sc_regInit ();
