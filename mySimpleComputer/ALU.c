@@ -59,6 +59,7 @@ ALU (int command, int operand)
             sc_regEnable (REG_ZERO_DIV | REG_TICK_IGNORE);
             return 1;
           }
+
         accumulatorValue /= operandValue;
       });
       break;

@@ -33,10 +33,9 @@ run-trans-assembler: all
 run-trans-basic: all
 	./simpleBasic/.bin/basic.bin ${ARGS}
 
-BASIC=
-BINARY=
+PROG=
 run-trans: all
-	./simpleBasic/.bin/basic.bin z_basic/${BASIC}.bas z_assembly/compiled/${BASIC}.sa
-	./simpleassembler/.bin/sat.bin z_assembly/compiled/${BASIC}.sa z_binaries/${BINARY}
+	./simpleBasic/.bin/basic.bin z_basic/${PROG}.bas z_assembly/compiled/${PROG}.sa
+	./simpleassembler/.bin/sat.bin z_assembly/compiled/${PROG}.sa z_binaries/${PROG}
 	@echo -e "\033[38;2;255;20;140mDone. (ꈍ ꒳ ꈍ✿)\033[0m"
-	./console/.bin/console.bin -p z_binaries/${BINARY} ${ARGS}
+	./console/.bin/console.bin -p z_binaries/${PROG} ${ARGS}

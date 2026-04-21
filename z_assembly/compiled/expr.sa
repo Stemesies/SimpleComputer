@@ -1,0 +1,21 @@
+00  READ 7f ; 
+01  READ 7e ; 
+02  LOAD 7c ; 
+03   MUL 7e ; 
+04   ADD 7b ; 
+05 STORE 78 ; 
+06  LOAD 7a ; 
+07   MUL 7f ; 
+08 DIVIDE 79 ; 
+09   ADD 78 ; 
+0a STORE 7d ; 
+0b WRITE 7d ; 
+0c  HALT 00 ; 
+78  = +0000 ; Tmp
+79  = -000e ; -14
+7a  = +002c ; 44
+7b  = +0005 ; 5
+7c  = +0021 ; 33
+7d  = +0000 ; C
+7e  = +0000 ; D
+7f  = +0000 ; A

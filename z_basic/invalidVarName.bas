@@ -1,0 +1,5 @@
+10 LET 1 = 0
+20 LET A1 = 0
+30 LET AA = 0
+40 LET A = 0
+50 LET a = 0

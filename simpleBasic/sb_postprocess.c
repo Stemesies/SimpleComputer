@@ -26,8 +26,8 @@ sb_postprocess ()
 
   if (ap > programLimit)
     {
-      printf ("Error: Program is too long / complex.\n");
-      printf ("| Max program length: %d Memory used by variables: %d.\n",
+      printf ("Error %d: Program is too long / complex.\n", bl);
+      printf ("| Memory used by program: %d; Memory used by variables: %d.\n",
               programLimit, MEMORY_SIZE - 1 - programLimit);
       return -1;
     }
@@ -47,6 +47,15 @@ sb_postprocess ()
     {
       int vap = constOffset - definedConstants[i].aDefenitionPos;
       defineVariable (atoi (definedConstants[i].value));
+
+      int val = assemblyProgram[vap].operand;
+      if (val < 0)
+        {
+          val = -val;
+          val |= (1 << (BITS_PER_COMMAND + BITS_PER_OPERAND));
+        }
+      assemblyProgram[vap].operand = val;
+
       assemblyProgram[vap].linkedBasicLine
           = definedVariables[i].bDefenitionPos;
       strcpy (comment, definedConstants[i].value);
@@ -65,9 +74,6 @@ sb_postprocess ()
       AssemblyCommand *command = &assemblyProgram[i];
       if (!command->needsFurtherInvestigation)
         continue;
-
-      printf ("%d %s\n", (int)(command->command - sc_commands),
-              command->command->command);
 
       if (command->command == sc_commands + 10    /*JUMP*/
           || command->command == sc_commands + 11 /*JNEG*/

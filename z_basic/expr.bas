@@ -1,1 +1,5 @@
+10 INPUT A
+20 INPUT D
 50 LET C =  (33 * D +5) + 44 * A / (1 - (5*3))
+55 PRINT C
+60 END

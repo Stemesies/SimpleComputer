@@ -21,6 +21,7 @@ sb_saveToFile (char *fileName)
       AssemblyCommand c = assemblyProgram[i];
       if (c.command == sc_commands && c.comment == NULL)
         continue;
+
       if (c.isVariable)
         {
           int sign, command, operand;

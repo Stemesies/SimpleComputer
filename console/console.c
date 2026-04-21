@@ -115,7 +115,6 @@ main (int argc, char *argv[])
   char currentArgument = '?';
   for (int i = 1; i < argc; i++)
     {
-      printf ("argv[%d] = %s\n", i, argv[i]);
       if (argv[i][0] == '-')
         {
           if (currentArgument != '?')
@@ -162,6 +161,9 @@ main (int argc, char *argv[])
 
   loadFont (font);
   rk_init ();
+
+  for (int i = 0; i < SCREEN_HEIGHT; i++)
+    write (1, "\n", 1);
 
   init_screen ();
 

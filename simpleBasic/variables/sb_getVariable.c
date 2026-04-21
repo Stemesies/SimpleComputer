@@ -10,6 +10,7 @@
 BasicVariable *
 sb_getVariable (char *operand)
 {
+  int oplen = strlen (operand);
   // printf ("Searching variable in '%s'.\n", operand);
   if (*operand - 'A' < 0 || *operand - 'A' > 26)
     {
@@ -27,12 +28,12 @@ sb_getVariable (char *operand)
       return NULL;
     }
 
-  if (isalpha (operand[1]))
+  if (oplen > 2 && isalnum (operand[1]))
     {
       int position = 0;
       printf ("Error at %d: Variable name should be 1 symbol length. Got '",
               bl);
-      while (!isalpha (operand[position]))
+      while (isalnum (operand[position]))
         putchar (operand[position++]);
       putchar ('\'');
       putchar ('.');
